@@ -8,7 +8,19 @@ Both `backend/` and `frontend/` are scaffolded and working end-to-end (register 
 
 The user is an intern software engineer who wants intern-level but professional code. Stick to what the blueprint requires — do not introduce frameworks, abstractions, or features that aren't in it.
 
-Companion docs in `.claude/` (alongside the blueprint): `todo_spec.md`, `todo_plan.md`, `SKILL.md` at the repo root. The README at the repo root has a quickstart and a curl-based manual smoke test.
+Companion docs in `.claude/`:
+- `todo_plan.md` — atomic task list (98 tasks across 13 milestones)
+- `plans/todo-app-plan.md` — high-level roadmap, current status, architecture decisions, remaining work
+- `specs/` — per-feature spec files (created by `/feature-spec-creator`); `specs/template.md` is the canonical template
+- `sprint/` — 7 sprint files (P1–P7) tracking the phase-by-phase implementation; current work is Sprint 6 (frontend)
+
+Skill references (read before working in the relevant area):
+- `SKILL.md` (repo root) — Node.js / Express backend patterns
+- `.claude/skills/security/SKILL.md` — **read before touching auth, middleware, SQL, or adding endpoints**
+- `.claude/skills/typescript/SKILL.md` — TypeScript strict-mode patterns for this todo app
+- `.claude/skills/tailwind/SKILL.md` — Tailwind patterns for the frontend
+
+The README at the repo root has a quickstart and a curl-based manual smoke test.
 
 ## Source of truth
 
@@ -44,7 +56,11 @@ Presentation ─▶ Application ─▶ Domain ◀─ Infrastructure
 
 **Cross-user reads return `404`, not `403`** — do not leak existence of other users' data.
 
-## Security non-negotiables (from blueprint §8)
+**Layering exception:** `auth.mw.ts` imports `container` directly from `composition.ts`. This is the only deliberate exception; all other middleware and controllers receive dependencies via the container passed from routes.
+
+**Pagination:** the `GET /api/todos` endpoint is cursor-based. The repo's `list()` returns `{ items, nextCursor }`. The cursor is an opaque todo ID; pass it as `?cursor=<id>` to page forward.
+
+## Security non-negotiables (from blueprint §8 — see `.claude/skills/security/SKILL.md` for implementation patterns)
 
 - Passwords: `bcrypt` cost 12. Never log or return password hashes; DTO mappers strip them.
 - JWT: HS256, 15-min access TTL, stored in `httpOnly` + `Secure` + `SameSite=Strict` cookies. Never put tokens in `localStorage` or response bodies.
@@ -52,7 +68,8 @@ Presentation ─▶ Application ─▶ Domain ◀─ Infrastructure
 - SQL: **prepared statements only** via `better-sqlite3`. No string concatenation, ever.
 - Validation: every controller calls `schema.parse(req.body)`. Server **never trusts** client validation — re-validate even fields the frontend already checked.
 - Auth errors: always generic `"Invalid credentials"`. Never reveal which field was wrong, and run `bcrypt.compare` even when the user lookup fails (timing-attack defense).
-- Env vars: validated with Zod at boot via `infrastructure/config/env.ts`. Fail fast if invalid.
+- Rate limits: `authLimiter` = 20 req/15 min on `/api/auth/*`; `globalLimiter` = 100 req/min across all routes (applied in `app.ts`).
+- Env vars: validated with Zod at boot via `infrastructure/config/env.ts`. Fail fast if invalid. (`JWT_REFRESH_TTL` is wired in env but the refresh-token flow is not yet implemented — leave it there for future phases.)
 - Logger redaction: `pino` redacts `req.headers.cookie`, `req.body.password`, `req.body.token`. Don't add log lines that bypass this.
 
 ## Conventions
@@ -67,12 +84,28 @@ Presentation ─▶ Application ─▶ Domain ◀─ Infrastructure
 
 ## Errors
 
-Throw, don't return error tuples — but only **domain errors** (`DomainError`, `NotFoundError`, `ConflictError`, `ForbiddenError`). The central `error.mw.ts` maps:
+Throw, don't return error tuples — but only **domain errors** (`DomainError`, `NotFoundError`, `ConflictError`, `ForbiddenError`, `UnauthorizedError`). The central `error.mw.ts` maps:
 - `ZodError` → `400 VALIDATION_ERROR` with field map
-- `DomainError` → its `status` + `code`
+- `DomainError` (and subclasses) → its `status` + `code`; `UnauthorizedError` always uses the generic `"Invalid credentials"` message
 - anything else → `500 INTERNAL_ERROR` with a generic message (real error logged server-side only)
 
 Response envelopes are fixed (blueprint §6): success is `{ data: ... }`, errors are `{ error: { code, message, fields? } }`.
+
+## Frontend patterns
+
+- **Auth state:** `AuthContext` calls `GET /api/auth/me` on mount to rehydrate the session. `useAuth()` exposes `{ user, loading, login, register, logout }`.
+- **Protected routes:** `<ProtectedRoute>` waits for `loading` before redirecting; wrap any route that requires auth.
+- **Filter state:** todo filter (`all` / `active` / `completed`) lives in URL search params (`useSearchParams`), not component state — preserves the filter on refresh.
+- **Optimistic updates:** toggle and delete mutate local state immediately and roll back on API error. Follow this pattern for any new mutations.
+- **API layer:** all requests go through `frontend/src/api/axios.ts` (sets `withCredentials: true`); add new endpoints as typed wrappers in `auth.api.ts` or `todos.api.ts`.
+
+## Custom slash commands
+
+| Command | What it does |
+|---------|-------------|
+| `/feature-spec-creator <idea>` | Creates a `feature/<slug>` branch and writes `.claude/specs/<slug>.md` from the template |
+| `/run_sprint [n]` | Executes the next unfinished sprint from `.claude/sprint/` following the runbook |
+| `/security-review` | Audits pending changes against the security checklist |
 
 ## Commands
 
@@ -97,9 +130,10 @@ npm run typecheck    # tsc --noEmit
 ```
 
 - Backend listens on port `4000`; frontend dev server on `5173`. CORS is whitelisted to `CORS_ORIGIN` only — keep them in sync.
+- `GET /healthz` returns `{ ok: true }` — useful for smoke-testing without auth.
 - The dev server auto-applies migrations on first run, so `npm run migrate` is only needed when adding a new `migrations/*.sql` file outside the dev loop.
 - `backend/data/todo.db` (and `-shm`/`-wal`) is the local SQLite file — gitignored. Delete it to reset state.
-- `backend/tests/` exists but is empty; per blueprint §18 phase 5, fill it with vitest unit + integration tests (use `supertest` for HTTP).
+- `backend/tests/` has `unit/`, `integration/`, and `helpers/` subdirectories scaffolded; fill them per blueprint §18 phase 5 using vitest + `supertest` for HTTP tests.
 
 ## Implementation order
 
