@@ -33,9 +33,9 @@ function rowToTodo(row: TodoRow): Todo {
 }
 
 export class SqliteTodoRepo implements ITodoRepo {
-  private readonly insertStmt;
-  private readonly byIdStmt;
-  private readonly deleteStmt;
+  private readonly insertStmt: Database.Statement<[string, string, string, string | null]>;
+  private readonly byIdStmt: Database.Statement<[string]>;
+  private readonly deleteStmt: Database.Statement<[string]>;
 
   constructor(private readonly db: Database.Database) {
     this.insertStmt = db.prepare(

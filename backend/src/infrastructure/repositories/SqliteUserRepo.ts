@@ -22,10 +22,10 @@ function rowToUser(row: UserRow): User {
 }
 
 export class SqliteUserRepo implements IUserRepo {
-  private readonly insertStmt;
-  private readonly byIdStmt;
-  private readonly byEmailStmt;
-  private readonly byUsernameStmt;
+  private readonly insertStmt: Database.Statement<[string, string, string, string]>;
+  private readonly byIdStmt: Database.Statement<[string]>;
+  private readonly byEmailStmt: Database.Statement<[string]>;
+  private readonly byUsernameStmt: Database.Statement<[string]>;
 
   constructor(db: Database.Database) {
     this.insertStmt = db.prepare(
