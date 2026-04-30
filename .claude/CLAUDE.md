@@ -10,15 +10,17 @@ The user is an intern software engineer who wants intern-level but professional 
 
 Companion docs in `.claude/`:
 - `todo_plan.md` — atomic task list (98 tasks across 13 milestones)
-- `plans/todo-app-plan.md` — high-level roadmap, current status, architecture decisions, remaining work
 - `specs/` — per-feature spec files (created by `/feature-spec-creator`); `specs/template.md` is the canonical template
-- `sprint/` — 7 sprint files (P1–P7) tracking the phase-by-phase implementation; current work is Sprint 6 (frontend)
+- `sprint/` — 7 sprint files (P1–P7) tracking the phase-by-phase implementation; Sprints 1–5 (backend) are complete; Sprint 6 (frontend) is in progress — core CRUD/auth/filters work end-to-end, remaining tasks are dark mode toggle, toast notifications, mobile audit (360×640 px), and Lighthouse a11y ≥ 90; Sprint 7 (hardening) is not started
 
 Skill references (read before working in the relevant area):
 - `SKILL.md` (repo root) — Node.js / Express backend patterns
 - `.claude/skills/security/SKILL.md` — **read before touching auth, middleware, SQL, or adding endpoints**
 - `.claude/skills/typescript/SKILL.md` — TypeScript strict-mode patterns for this todo app
 - `.claude/skills/tailwind/SKILL.md` — Tailwind patterns for the frontend
+- `.claude/skills/react-ui-patterns/SKILL.md` — Loading states, error handling, optimistic updates, empty states, button disable-during-async patterns
+- `.claude/skills/adapt/SKILL.md` — **read before any UI work** — responsive/cross-platform patterns: breakpoints (360px→1280px+), touch targets, mobile-first Tailwind, iOS fixes, anti-patterns
+- `.claude/skills/impeccable/SKILL.md` — UI design audit, polish, visual hierarchy, UX copy, accessibility, responsive behavior, design systems
 
 The README at the repo root has a quickstart and a curl-based manual smoke test.
 
@@ -98,6 +100,7 @@ Response envelopes are fixed (blueprint §6): success is `{ data: ... }`, errors
 - **Filter state:** todo filter (`all` / `active` / `completed`) lives in URL search params (`useSearchParams`), not component state — preserves the filter on refresh.
 - **Optimistic updates:** toggle and delete mutate local state immediately and roll back on API error. Follow this pattern for any new mutations.
 - **API layer:** all requests go through `frontend/src/api/axios.ts` (sets `withCredentials: true`); add new endpoints as typed wrappers in `auth.api.ts` or `todos.api.ts`.
+- **Component extraction:** reusable UI primitives (Button, Input, Card, Modal) belong in `frontend/src/components/ui/`. Custom hooks go in `frontend/src/hooks/`. Shared Zod schemas go in `frontend/src/schemas/`. `Dashboard.tsx` is currently a single large component — follow the ~150-line rule when adding UI features by extracting to `ui/`.
 
 ## Custom slash commands
 

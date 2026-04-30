@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "migrate": "tsx src/infrastructure/db/runMigrations.ts"
+    "migrate": "tsx src/infrastructure/db/runMigrations.ts",
+    "sweep": "tsx scripts/sweep-blacklist.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
