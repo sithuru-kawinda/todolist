@@ -2,9 +2,9 @@ import type Database from 'better-sqlite3';
 import type { ITokenBlacklist } from '../../domain/services/ITokenBlacklist.js';
 
 export class SqliteTokenBlacklist implements ITokenBlacklist {
-  private readonly insertStmt;
-  private readonly selectStmt;
-  private readonly sweepStmt;
+  private readonly insertStmt: Database.Statement<[string, string]>;
+  private readonly selectStmt: Database.Statement<[string]>;
+  private readonly sweepStmt: Database.Statement<[]>;
 
   constructor(db: Database.Database) {
     this.insertStmt = db.prepare('INSERT OR IGNORE INTO token_blacklist (jti, expires_at) VALUES (?, ?)');
