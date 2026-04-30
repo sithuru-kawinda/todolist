@@ -45,8 +45,8 @@ If the branch already exists, append `-01`, `-02`, … until the name is free.
 
 **Core — always read these three:**
 
-| File | Purpose |
 |------|---------|
+| File | Purpose |
 | `.claude/todo_blueprint.md` | Binding spec — re-read §3 (layers), §6 (API contract), §8 (security), §18 (phases) |
 | `.claude/todo_spec.md` | Validation rules (§5), security requirements (§6), edge cases (§11) |
 | `.claude/specs/template.md` | Template to follow exactly |
