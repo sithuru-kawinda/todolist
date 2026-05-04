@@ -74,7 +74,14 @@ export function Register() {
 
             <div>
               <Input id="password" type="password" label="Password" autoComplete="new-password" value={values.password} onChange={set('password')} placeholder="••••••••" error={errors['password']} required />
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-zinc-700">
+              <div
+                role="progressbar"
+                aria-valuenow={strength}
+                aria-valuemin={0}
+                aria-valuemax={5}
+                aria-label={`Password strength: ${STRENGTH_LABEL[strength] || 'empty'}`}
+                className="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-zinc-700"
+              >
                 <div className={`h-full rounded-full transition-all ${STRENGTH_COLOR[strength]}`} style={{ width: `${(strength / 5) * 100}%` }} />
               </div>
               {values.password && (

@@ -33,12 +33,12 @@ export function Navbar({ remaining }: NavbarProps) {
         </div>
         <div>
           <h1 className="text-base font-bold text-gray-900 dark:text-white sm:text-lg">TodoApp</h1>
-          <p className="text-xs text-gray-500 dark:text-zinc-400">{remaining} task{remaining !== 1 ? 's' : ''} remaining</p>
+          <p className="text-xs text-gray-600 dark:text-zinc-400">{remaining} task{remaining !== 1 ? 's' : ''} remaining</p>
         </div>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
-        <span className="hidden text-sm text-gray-500 dark:text-zinc-400 sm:inline">{user?.username}</span>
+        <span className="hidden text-sm text-gray-600 dark:text-zinc-400 sm:inline">{user?.username}</span>
 
         <button
           onClick={toggle}

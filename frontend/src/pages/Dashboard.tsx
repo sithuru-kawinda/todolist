@@ -25,19 +25,18 @@ export function Dashboard() {
         <TodoForm onAdd={add} />
 
         {/* filter tabs */}
-        <div className="my-5 flex gap-1" role="tablist" aria-label="Filter todos">
+        <div className="my-5 flex gap-1" role="group" aria-label="Filter todos">
           {FILTERS.map(({ label, value }) => {
             const active = status === value;
             return (
               <button
                 key={value}
-                role="tab"
-                aria-selected={active}
+                aria-pressed={active}
                 onClick={() => setParams({ status: value })}
                 className={`rounded-full px-4 py-2.5 text-xs font-medium transition focus:outline-none focus:ring-2 focus:ring-red-600 ${
                   active
                     ? 'bg-red-600 text-white'
-                    : 'text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white'
+                    : 'text-gray-600 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white'
                 }`}
               >
                 {label}
@@ -56,7 +55,7 @@ export function Dashboard() {
             </>
           ) : todos.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-gray-300 py-10 text-center dark:border-zinc-700">
-              <p className="text-sm text-gray-400 dark:text-zinc-500">
+              <p className="text-sm text-gray-600 dark:text-zinc-400">
                 {status === 'all' ? 'No tasks yet. Add one above.' : `No ${status} tasks.`}
               </p>
             </div>
