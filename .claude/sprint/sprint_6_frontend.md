@@ -40,41 +40,41 @@ A user can do every flow end-to-end in a browser: register, log in, manage todos
 ## 5. Backlog
 
 ### M-9 · Frontend scaffold (2 h)
-- [ ] T-061 — `frontend/tsconfig.json` strict + path alias `@/`
-- [ ] T-062 — Install `react-router-dom`, `axios`, `zod`
-- [ ] T-063 — `frontend/.env.example` with `VITE_API_URL`
-- [ ] T-064 — Routing skeleton: `/login`, `/register`, `/`, `/todos/:id`, `*`
-- [ ] T-065 — `api/axios.ts` — `withCredentials: true`, 401-interceptor → `/login`
-- [ ] T-066 — Tailwind tokens — palette, Inter font, dark-mode `class`
-- [ ] T-067 — `ui/` primitives — `Button`, `Input`, `Card`
+- [x] T-061 — `frontend/tsconfig.json` strict + path alias `@/`
+- [x] T-062 — Install `react-router-dom`, `axios`, `zod`
+- [x] T-063 — `frontend/.env.example` with `VITE_API_URL`
+- [x] T-064 — Routing skeleton: `/login`, `/register`, `/`, `/todos/:id`, `*`
+- [x] T-065 — `api/axios.ts` — `withCredentials: true`, 401-interceptor → `/login`
+- [x] T-066 — Tailwind tokens — palette, Inter font, dark-mode `class`
+- [x] T-067 — `ui/` primitives — `Button`, `Input`, `Card`
 
 ### M-10 · Frontend auth (3 h)
-- [ ] T-068 — `schemas/auth.schema.ts` — share Zod schemas with backend
-- [ ] T-069 — `api/auth.api.ts` — `register`, `login`, `logout`, `me`
-- [ ] T-070 — `context/AuthContext.tsx` + `useAuth` hook
-- [ ] T-071 — `pages/Login.tsx` — inline validation, disable while submitting
-- [ ] T-072 — `pages/Register.tsx` — form + password strength meter
-- [ ] T-073 — `components/ProtectedRoute.tsx`
-- [ ] T-074 — On boot, call `me` to populate context
+- [x] T-068 — `schemas/auth.schema.ts` — share Zod schemas with backend
+- [x] T-069 — `api/auth.api.ts` — `register`, `login`, `logout`, `me`
+- [x] T-070 — `context/AuthContext.tsx` + `useAuth` hook
+- [x] T-071 — `pages/Login.tsx` — inline validation, disable while submitting
+- [x] T-072 — `pages/Register.tsx` — form + password strength meter
+- [x] T-073 — `components/ProtectedRoute.tsx`
+- [x] T-074 — On boot, call `me` to populate context
 
 ### M-11 · Dashboard (4 h)
-- [ ] T-075 — `api/todos.api.ts` — `list`, `create`, `update`, `remove`
-- [ ] T-076 — `hooks/useTodos.ts` — fetch + cache + mutations
-- [ ] T-077 — `components/TodoForm.tsx` — Enter to add
-- [ ] T-078 — `components/TodoItem.tsx` — toggle, inline edit, delete
-- [ ] T-079 — `pages/Dashboard.tsx` — list, filter tabs URL-synced via `?status=`, empty state
-- [ ] T-080 — Optimistic updates + rollback on rejection
-- [ ] T-081 — `components/Navbar.tsx` — username + logout
-- [ ] T-082 — `pages/TodoDetail.tsx` — full view + edit form
-- [ ] T-083 — Loading skeleton during initial fetch
+- [x] T-075 — `api/todos.api.ts` — `list`, `create`, `update`, `remove`
+- [x] T-076 — `hooks/useTodos.ts` — fetch + cache + mutations
+- [x] T-077 — `components/TodoForm.tsx` — Enter to add
+- [x] T-078 — `components/TodoItem.tsx` — toggle, inline edit, delete
+- [x] T-079 — `pages/Dashboard.tsx` — list, filter tabs URL-synced via `?status=`, empty state
+- [x] T-080 — Optimistic updates + rollback on rejection
+- [x] T-081 — `components/Navbar.tsx` — username + logout
+- [x] T-082 — `pages/TodoDetail.tsx` — full view + edit form
+- [x] T-083 — Loading skeleton during initial fetch
 
 ### M-12 · Polish (2 h)
-- [ ] T-084 — Toast component + global error toast on any 4xx/5xx
-- [ ] T-085 — Keyboard: Esc cancels inline edit, Enter saves
-- [ ] T-086 — Dark-mode toggle in `localStorage`; default to `prefers-color-scheme`
+- [x] T-084 — Toast component + global error toast on any 4xx/5xx
+- [x] T-085 — Keyboard: Esc cancels inline edit, Enter saves
+- [x] T-086 — Dark-mode toggle in `localStorage`; default to `prefers-color-scheme`
 - [ ] T-087 — Audit at 360 × 640 px; fix overflow / cramped layouts
-- [ ] T-088 — Visible `:focus` ring on every interactive element
-- [ ] T-089 — Form errors via `aria-describedby` + `role="alert"`
+- [x] T-088 — Visible `:focus` ring on every interactive element
+- [x] T-089 — Form errors via `aria-describedby` + `role="alert"`
 - [ ] T-090 — Lighthouse: a11y ≥ 90, perf ≥ 80
 
 ## 6. Definition of Done
@@ -83,11 +83,11 @@ A user can do every flow end-to-end in a browser: register, log in, manage todos
 - [ ] Refresh keeps user logged in (cookie present)
 - [ ] Optimistic toggle visibly rolls back when backend is killed mid-action
 - [ ] App usable at 360 × 640 px with no horizontal scroll
-- [ ] Dark mode persists across reload
+- [x] Dark mode persists across reload
 - [ ] Lighthouse: a11y ≥ 90, perf ≥ 80 on `/login` and `/`
-- [ ] Filter tabs sync to URL (`?status=`)
-- [ ] All toasts auto-dismiss after 5 s
-- [ ] Every form field has a `<label>` or `aria-label`
+- [x] Filter tabs sync to URL (`?status=`)
+- [x] All toasts auto-dismiss after 5 s
+- [x] Every form field has a `<label>` or `aria-label`
 
 ## 7. Demo Plan
 
