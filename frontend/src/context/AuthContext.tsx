@@ -17,10 +17,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    authApi.me().then((u) => {
-      setUser(u);
-      setLoading(false);
-    });
+    authApi.me()
+      .then((u) => setUser(u))
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   const login = async (email: string, password: string) => {
