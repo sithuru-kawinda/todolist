@@ -11,7 +11,7 @@ The user is an intern software engineer who wants intern-level but professional 
 Companion docs in `.claude/`:
 - `todo_plan.md` — atomic task list (98 tasks across 13 milestones)
 - `specs/` — per-feature spec files (created by `/feature-spec-creator`); `specs/template.md` is the canonical template
-- `sprint/` — 7 sprint files (P1–P7) tracking the phase-by-phase implementation; Sprints 1–5 (backend) are complete; Sprint 6 (frontend) is in progress — core CRUD/auth/filters work end-to-end, remaining tasks are dark mode toggle, toast notifications, mobile audit (360×640 px), and Lighthouse a11y ≥ 90; Sprint 7 (hardening) is not started
+- `sprint/` — 7 sprint files (P1–P7) tracking the phase-by-phase implementation; Sprints 1–5 (backend) are complete; Sprint 6 (frontend) is in progress — core CRUD/auth/filters work end-to-end, remaining tasks are dark mode toggle, toast notifications, mobile audit (360×640 px), and Lighthouse a11y ≥ 90; Sprint 7 (hardening) is not started. **Note:** all sprint file headers show `Status: Not started` regardless of actual completion — treat the code and git log as the source of truth for what is done, not the sprint file metadata.
 
 Skill references (read before working in the relevant area):
 - `SKILL.md` (repo root) — Node.js / Express backend patterns
@@ -99,6 +99,8 @@ Response envelopes are fixed (blueprint §6): success is `{ data: ... }`, errors
 - **Protected routes:** `<ProtectedRoute>` waits for `loading` before redirecting; wrap any route that requires auth.
 - **Filter state:** todo filter (`all` / `active` / `completed`) lives in URL search params (`useSearchParams`), not component state — preserves the filter on refresh.
 - **Optimistic updates:** toggle and delete mutate local state immediately and roll back on API error. Follow this pattern for any new mutations.
+- **Toast notifications:** `ToastContext.tsx` is already scaffolded in `frontend/src/context/`; consume it via `useToast()` — do not add a second toast system.
+- **Dark mode:** `useTheme.ts` is already scaffolded in `frontend/src/hooks/`; it persists the preference and toggles a `dark` class on `<html>`. Wire the toggle UI to this hook.
 - **API layer:** all requests go through `frontend/src/api/axios.ts` (sets `withCredentials: true`); add new endpoints as typed wrappers in `auth.api.ts` or `todos.api.ts`.
 - **Component extraction:** reusable UI primitives (Button, Input, Card, Modal) belong in `frontend/src/components/ui/`. Custom hooks go in `frontend/src/hooks/`. Shared Zod schemas go in `frontend/src/schemas/`. `Dashboard.tsx` is currently a single large component — follow the ~150-line rule when adding UI features by extracting to `ui/`.
 
@@ -121,6 +123,7 @@ npm run migrate      # tsx src/infrastructure/db/runMigrations.ts
 npm test             # vitest run (single-shot)
 npm run test:watch   # vitest in watch mode
 npm test -- <path>   # run a single test file
+npm run sweep        # delete expired rows from token_blacklist (run periodically in prod)
 npm run lint         # eslint src --ext .ts
 npm run typecheck    # tsc --noEmit
 
