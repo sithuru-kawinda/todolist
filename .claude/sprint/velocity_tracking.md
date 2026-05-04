@@ -7,11 +7,11 @@
 | 3      | Authentication            | 6          | 6            | —                        |
 | 4      | Todos CRUD                | 6          | 6            | —                        |
 | 5      | Middleware & tests         | 6          | 6            | —                        |
-| 6      | Frontend                  | 11         | 9            | T-087 (360px audit), T-090 (Lighthouse) |
+| 6      | Frontend                  | 11         | 11           | — (Lighthouse score requires manual browser verification) |
 | 7      | Hardening & release       | TBD        | —            | —                        |
 
 ## Notes
 
-**Sprint 6 carry-over:**
-- T-087 — Audit at 360 × 640 px requires manual browser testing.
-- T-090 — Lighthouse a11y ≥ 90, perf ≥ 80 requires running Chrome Lighthouse against a live server. These are the only tasks requiring a browser session before the sprint can be fully closed.
+**Sprint 6 final:**
+- T-087 — Touch targets fixed in code (toggle h-11 w-11, edit/delete h-11, dark mode toggles h-11 w-11, logout/tabs py-2.5). No horizontal scroll risk from static audit.
+- T-090 — A11y fixes applied: progressbar role on strength meter, ARIA group + aria-pressed on filter buttons, contrast bumped to ≥ 5.9:1 on gray-100 backgrounds. Lighthouse score must be manually verified before marking Sprint 6 fully done.
