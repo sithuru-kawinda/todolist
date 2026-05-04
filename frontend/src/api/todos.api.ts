@@ -19,6 +19,10 @@ export const todosApi = {
     const { data } = await api.patch(`/todos/${id}`, patch);
     return data.data;
   },
+  async getOne(id: string): Promise<Todo> {
+    const { data } = await api.get(`/todos/${id}`);
+    return data.data;
+  },
   async remove(id: string): Promise<void> {
     await api.delete(`/todos/${id}`);
   },

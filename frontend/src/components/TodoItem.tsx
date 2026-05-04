@@ -1,4 +1,5 @@
 import { useState, type KeyboardEvent } from 'react';
+import { Link } from 'react-router-dom';
 import type { Todo } from '../types/models.js';
 
 function EditIcon() {
@@ -62,9 +63,12 @@ export function TodoItem({ todo, onToggle, onUpdate, onRemove }: TodoItemProps) 
           className="min-w-0 flex-1 rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-900 dark:bg-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-600"
         />
       ) : (
-        <span className={`min-w-0 flex-1 truncate text-sm ${todo.completed ? 'text-gray-400 line-through dark:text-zinc-500' : 'text-gray-900 dark:text-white'}`}>
+        <Link
+          to={`/todos/${todo.id}`}
+          className={`min-w-0 flex-1 truncate text-sm focus:outline-none focus:ring-2 focus:ring-red-600 rounded ${todo.completed ? 'text-gray-400 line-through dark:text-zinc-500' : 'text-gray-900 hover:text-red-600 dark:text-white dark:hover:text-red-400'}`}
+        >
           {todo.title}
-        </span>
+        </Link>
       )}
 
       {!editing && (

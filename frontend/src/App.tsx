@@ -5,6 +5,7 @@ import { ProtectedRoute } from './components/ProtectedRoute.js';
 import { Login } from './pages/Login.js';
 import { Register } from './pages/Register.js';
 import { Dashboard } from './pages/Dashboard.js';
+import { TodoDetail } from './pages/TodoDetail.js';
 
 export default function App() {
   return (
@@ -19,6 +20,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/todos/:id"
+              element={
+                <ProtectedRoute>
+                  <TodoDetail />
                 </ProtectedRoute>
               }
             />
