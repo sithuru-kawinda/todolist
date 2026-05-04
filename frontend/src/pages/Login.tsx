@@ -2,8 +2,22 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
 import { loginSchema } from '../schemas/auth.schema.js';
-import { Input } from '../components/ui/Input.js';
-import { Button } from '../components/ui/Button.js';
+
+function UserIcon() {
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.337 0-10 1.676-10 5v2h20v-2c0-3.324-6.663-5-10-5z" />
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M18 8h-1V6c0-2.761-2.239-5-5-5S7 3.239 7 6v2H6c-1.105 0-2 .895-2 2v10c0 1.105.895 2 2 2h12c1.105 0 2-.895 2-2V10c0-1.105-.895-2-2-2zm-6 9c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+    </svg>
+  );
+}
 
 export function Login() {
   const { login } = useAuth();
@@ -39,40 +53,74 @@ export function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 dark:bg-black">
       <div className="w-full max-w-sm">
-        <div className="mb-8 flex flex-col items-center gap-2">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-600 text-2xl font-bold text-white">✓</div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">TodoApp</h1>
+        {/* Avatar overlapping card top */}
+        <div className="flex justify-center">
+          <div className="relative z-10 mb-[-2.5rem] flex h-20 w-20 items-center justify-center rounded-full bg-red-600 border-4 border-gray-100 shadow-md dark:border-black">
+            <span className="sr-only">User avatar</span>
+            <svg className="h-10 w-10 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.337 0-10 1.676-10 5v2h20v-2c0-3.324-6.663-5-10-5z" />
+            </svg>
+          </div>
         </div>
 
-        <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-zinc-900 sm:p-8">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Welcome back</h2>
-            <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">Sign in to continue.</p>
-          </div>
+        {/* Card */}
+        <div className="rounded-2xl bg-white px-8 pb-8 pt-14 shadow-sm dark:bg-zinc-900">
+          <h2 className="mb-6 text-center text-2xl font-bold tracking-widest text-gray-900 uppercase dark:text-white">
+            LOGIN
+          </h2>
 
           <form onSubmit={onSubmit} noValidate className="space-y-4">
-            <Input
-              id="email"
-              type="email"
-              label="Email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              error={errors.email}
-              required
-            />
-            <Input
-              id="password"
-              type="password"
-              label="Password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              error={errors.password}
-              required
-            />
+            {/* Email */}
+            <div>
+              <div className={`flex items-center overflow-hidden rounded-lg bg-gray-100 dark:bg-zinc-800 ${errors.email ? 'ring-2 ring-red-500' : ''}`}>
+                <span className="pl-3 text-red-500 shrink-0"><UserIcon /></span>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  autoComplete="email"
+                  required
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? 'email-error' : undefined}
+                  className="flex-1 bg-transparent px-3 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-zinc-500"
+                />
+              </div>
+              {errors.email && (
+                <p id="email-error" role="alert" className="mt-1 text-xs text-red-500">{errors.email}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <div className={`flex items-center overflow-hidden rounded-lg bg-gray-100 dark:bg-zinc-800 ${errors.password ? 'ring-2 ring-red-500' : ''}`}>
+                <span className="pl-3 text-red-500 shrink-0"><LockIcon /></span>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  autoComplete="current-password"
+                  required
+                  aria-invalid={!!errors.password}
+                  aria-describedby={errors.password ? 'password-error' : undefined}
+                  className="flex-1 bg-transparent px-3 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-zinc-500"
+                />
+              </div>
+              {errors.password && (
+                <p id="password-error" role="alert" className="mt-1 text-xs text-red-500">{errors.password}</p>
+              )}
+            </div>
+
+            {/* Remember me */}
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="remember" className="h-4 w-4 rounded accent-red-600" />
+              <label htmlFor="remember" className="text-sm text-gray-600 select-none dark:text-zinc-400">
+                Remember me
+              </label>
+            </div>
 
             {serverError && (
               <p role="alert" className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-600 dark:bg-red-950/30 dark:text-red-400">
@@ -80,15 +128,28 @@ export function Login() {
               </p>
             )}
 
-            <Button type="submit" loading={submitting} className="w-full mt-2">
-              Sign in
-            </Button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="mt-2 w-full rounded-full bg-red-600 py-3 text-sm font-bold tracking-widest text-white uppercase transition hover:bg-red-500 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {submitting ? (
+                <svg className="mx-auto h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+              ) : 'LOGIN'}
+            </button>
           </form>
 
-          <p className="mt-5 text-center text-sm text-gray-500 dark:text-zinc-400">
+          <p className="mt-4 text-center text-xs text-gray-400 dark:text-zinc-500">
+            Forgot Username / Password?
+          </p>
+
+          <p className="mt-4 text-center text-sm text-gray-500 dark:text-zinc-400">
             No account?{' '}
             <Link to="/register" className="font-semibold text-red-600 hover:underline underline-offset-4">
-              Register
+              Register here
             </Link>
           </p>
         </div>
