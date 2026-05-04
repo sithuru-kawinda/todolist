@@ -45,12 +45,14 @@ export function TodoItem({ todo, onToggle, onUpdate, onRemove }: TodoItemProps) 
       <button
         onClick={() => onToggle(todo)}
         aria-label={`Mark "${todo.title}" as ${todo.completed ? 'active' : 'complete'}`}
-        className={`h-5 w-5 shrink-0 rounded-full border-2 transition focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-1 ${
+        className="group flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-1"
+      >
+        <span className={`h-5 w-5 rounded-full border-2 transition ${
           todo.completed
             ? 'border-red-600 bg-red-600'
-            : 'border-gray-300 hover:border-gray-400 dark:border-zinc-600 dark:hover:border-zinc-400'
-        }`}
-      />
+            : 'border-gray-300 group-hover:border-gray-400 dark:border-zinc-600 dark:group-hover:border-zinc-400'
+        }`} />
+      </button>
 
       {editing ? (
         <input
@@ -75,7 +77,7 @@ export function TodoItem({ todo, onToggle, onUpdate, onRemove }: TodoItemProps) 
         <div className="flex shrink-0 items-center gap-2 sm:gap-4">
           <button
             onClick={() => { setEditTitle(todo.title); setEditing(true); }}
-            className="flex h-9 items-center gap-1 rounded-lg px-2 text-xs text-gray-500 transition hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-red-600 sm:text-sm"
+            className="flex h-11 items-center gap-1 rounded-lg px-3 text-xs text-gray-500 transition hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-red-600 sm:text-sm"
           >
             <span className="text-red-600"><EditIcon /></span>
             <span className="hidden sm:inline">Edit</span>
@@ -83,7 +85,7 @@ export function TodoItem({ todo, onToggle, onUpdate, onRemove }: TodoItemProps) 
           <button
             onClick={() => onRemove(todo.id)}
             aria-label={`Delete ${todo.title}`}
-            className="flex h-9 items-center gap-1 rounded-lg px-2 text-xs text-gray-500 transition hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-red-600 sm:text-sm"
+            className="flex h-11 items-center gap-1 rounded-lg px-3 text-xs text-gray-500 transition hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-red-600 sm:text-sm"
           >
             <span className="text-red-600"><TrashIcon /></span>
             <span className="hidden sm:inline">Delete</span>

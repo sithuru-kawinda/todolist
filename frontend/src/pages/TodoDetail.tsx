@@ -85,7 +85,7 @@ export function TodoDetail() {
         <button
           onClick={toggle}
           aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="flex h-11 w-11 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-600"
         >
           {dark ? <SunIcon /> : <MoonIcon />}
         </button>

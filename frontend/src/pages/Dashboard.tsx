@@ -34,7 +34,7 @@ export function Dashboard() {
                 role="tab"
                 aria-selected={active}
                 onClick={() => setParams({ status: value })}
-                className={`rounded-full px-4 py-1.5 text-xs font-medium transition focus:outline-none focus:ring-2 focus:ring-red-600 ${
+                className={`rounded-full px-4 py-2.5 text-xs font-medium transition focus:outline-none focus:ring-2 focus:ring-red-600 ${
                   active
                     ? 'bg-red-600 text-white'
                     : 'text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white'
