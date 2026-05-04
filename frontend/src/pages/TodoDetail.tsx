@@ -74,18 +74,18 @@ export function TodoDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900 dark:bg-black dark:text-white">
-      <header className="flex items-center justify-between border-b border-gray-200 px-4 py-4 dark:border-zinc-800 sm:px-6">
+    <div className="min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+      <header className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:px-6">
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-red-600 rounded"
+          className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-600 rounded"
         >
           <BackIcon /> All tasks
         </Link>
         <button
           onClick={toggle}
           aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-          className="flex h-11 w-11 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="flex h-11 w-11 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-600"
         >
           {dark ? <SunIcon /> : <MoonIcon />}
         </button>
@@ -100,8 +100,8 @@ export function TodoDetail() {
         )}
 
         {pageState === 'error' && (
-          <div className="rounded-2xl border border-dashed border-gray-300 py-16 text-center dark:border-zinc-700">
-            <p className="text-sm text-gray-400 dark:text-zinc-500">Task not found.</p>
+          <div className="rounded-2xl border border-dashed border-gray-300 py-16 text-center">
+            <p className="text-sm text-gray-400">Task not found.</p>
           </div>
         )}
 
@@ -111,25 +111,25 @@ export function TodoDetail() {
               <span className={`rounded-full px-3 py-1 text-xs font-medium ${todo.completed ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
                 {todo.completed ? 'Completed' : 'Active'}
               </span>
-              <span className="text-xs text-gray-400 dark:text-zinc-500">
+              <span className="text-xs text-gray-400 dark:text-gray-400">
                 Updated {new Date(todo.updatedAt).toLocaleDateString()}
               </span>
             </div>
 
-            <form onSubmit={onSave} className="space-y-4 rounded-2xl bg-white p-6 shadow-sm dark:bg-zinc-900 sm:p-8">
+            <form onSubmit={onSave} className="space-y-4 rounded-2xl bg-white p-6 shadow-sm dark:bg-gray-800 sm:p-8">
               <div className="space-y-1.5">
-                <label htmlFor="detail-title" className="block text-sm font-medium text-gray-700 dark:text-zinc-300">Title</label>
+                <label htmlFor="detail-title" className="block text-sm font-medium text-gray-700 dark:text-gray-200">Title</label>
                 <input
                   id="detail-title"
                   value={title}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
                   required
-                  className="w-full rounded-full bg-gray-100 px-5 py-3 text-base text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-red-600 dark:bg-zinc-800 dark:text-white"
+                  className="w-full rounded-full bg-gray-100 px-5 py-3 text-base text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-red-600 dark:bg-gray-700 dark:text-white"
                 />
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="detail-description" className="block text-sm font-medium text-gray-700 dark:text-zinc-300">
-                  Description <span className="font-normal text-gray-400 dark:text-zinc-500">(optional)</span>
+                <label htmlFor="detail-description" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Description <span className="font-normal text-gray-400 dark:text-gray-400">(optional)</span>
                 </label>
                 <textarea
                   id="detail-description"
@@ -137,7 +137,7 @@ export function TodoDetail() {
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
                   rows={4}
                   placeholder="Add more detail…"
-                  className="w-full resize-none rounded-2xl bg-gray-100 px-5 py-3 text-base text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-red-600 dark:bg-zinc-800 dark:text-white"
+                  className="w-full resize-none rounded-2xl bg-gray-100 px-5 py-3 text-base text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-red-600 dark:bg-gray-700 dark:text-white"
                 />
               </div>
               <Button type="submit" loading={saving} className="w-full">Save changes</Button>

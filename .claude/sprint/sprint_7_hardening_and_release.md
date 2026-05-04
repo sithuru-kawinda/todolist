@@ -2,15 +2,15 @@
 
 ## 1. Sprint Info
 
-| Field          | Value                                                       |
-|----------------|-------------------------------------------------------------|
-| Phase          | P7 (blueprint §18)                                          |
-| Theme          | Final security pass + audit + tag `v1.0.0`                  |
-| Day            | 7                                                           |
-| Effort         | 3 h                                                         |
-| Story points   | 3                                                           |
-| Tasks          | T-091 → T-098                                               |
-| Status         | Not started                                                 |
+| Field        | Value                                      |
+| ------------ | ------------------------------------------ |
+| Phase        | P7 (blueprint §18)                         |
+| Theme        | Final security pass + audit + tag `v1.0.0` |
+| Day          | 7                                          |
+| Effort       | 3 h                                        |
+| Story points | 3                                          |
+| Tasks        | T-091 → T-098                              |
+| Status       | Not started                                |
 
 ## 2. Sprint Goal
 
@@ -22,20 +22,21 @@ The full project (backend + frontend) passes a manual security pass and dependen
 
 ## 4. Scope
 
-| ID                         | Requirement                                                  | Tasks       |
-|----------------------------|--------------------------------------------------------------|-------------|
-| Spec §11 (edge cases)      | Manual pass through cross-user/expired/revoked/oversized     | T-091       |
-| SEC-017                    | Final logger redaction confirmation                          | T-092       |
-| SEC-018                    | `npm audit --production` clean                               | T-093       |
-| Secret hygiene             | `.env` gitignored, `.env.example` placeholders only          | T-094       |
-| Blueprint §20              | Acceptance checklist fully ticked                            | T-095       |
-| Spec §15                   | Traceability matrix fully covered                            | T-096       |
-| SEC-020                    | Daily blacklist sweep                                        | T-097       |
-| Release                    | Tag `v1.0.0` with notes                                      | T-098       |
+| ID                    | Requirement                                              | Tasks |
+| --------------------- | -------------------------------------------------------- | ----- |
+| Spec §11 (edge cases) | Manual pass through cross-user/expired/revoked/oversized | T-091 |
+| SEC-017               | Final logger redaction confirmation                      | T-092 |
+| SEC-018               | `npm audit --production` clean                           | T-093 |
+| Secret hygiene        | `.env` gitignored, `.env.example` placeholders only      | T-094 |
+| Blueprint §20         | Acceptance checklist fully ticked                        | T-095 |
+| Spec §15              | Traceability matrix fully covered                        | T-096 |
+| SEC-020               | Daily blacklist sweep                                    | T-097 |
+| Release               | Tag `v1.0.0` with notes                                  | T-098 |
 
 ## 5. Backlog
 
 ### M-13 · Hardening + release
+
 - [ ] T-091 — Manual security pass: cross-user IDs, expired token, revoked token, oversized body
 - [ ] T-092 — Confirm logger redaction on a fake login (final check)
 - [ ] T-093 — `npm audit --production` in both apps; resolve high / critical
@@ -75,17 +76,18 @@ The full project (backend + frontend) passes a manual security pass and dependen
 
 ## 8. Risks & Mitigations
 
-| Risk                                                             | Mitigation                                                  |
-|------------------------------------------------------------------|-------------------------------------------------------------|
-| `npm audit` finds high CVE late                                  | Run audit at start of sprint, not end                       |
-| Manual security pass forgets a case                              | Use spec §11 edge-case table as the live checklist          |
-| Release notes drift from actual scope                            | Generate from spec §1 goals + spec §15 traceability matrix  |
-| Tagging from a dirty working tree                                | `git status` clean before `git tag`                         |
-| Sweep script accidentally deletes valid rows                     | `WHERE expires_at < CURRENT_TIMESTAMP` — test on a copy first |
+| Risk                                         | Mitigation                                                    |
+| -------------------------------------------- | ------------------------------------------------------------- |
+| `npm audit` finds high CVE late              | Run audit at start of sprint, not end                         |
+| Manual security pass forgets a case          | Use spec §11 edge-case table as the live checklist            |
+| Release notes drift from actual scope        | Generate from spec §1 goals + spec §15 traceability matrix    |
+| Tagging from a dirty working tree            | `git status` clean before `git tag`                           |
+| Sweep script accidentally deletes valid rows | `WHERE expires_at < CURRENT_TIMESTAMP` — test on a copy first |
 
 ## 9. Daily Standup
 
 **Day 7 — yyyy-mm-dd**
+
 - Yesterday: Sprint 6 complete (T-061 → T-090)
 - Today: T-091 → T-098
 - Blockers:

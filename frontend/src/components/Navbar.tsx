@@ -26,31 +26,32 @@ export function Navbar({ remaining }: NavbarProps) {
   const { dark, toggle } = useTheme();
 
   return (
-    <header className="flex items-center justify-between border-b border-gray-200 px-4 py-4 dark:border-zinc-800 sm:px-6">
+    <header className="flex items-center justify-between border-b border-gray-200 px-4 py-4 shadow-sm dark:border-white/10 sm:px-6" style={{ backgroundColor: 'var(--nav-bg)' }}>
       <div className="flex items-center gap-3">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-600 text-sm font-bold text-white">
           ✓
         </div>
         <div>
           <h1 className="text-base font-bold text-gray-900 dark:text-white sm:text-lg">TodoApp</h1>
-          <p className="text-xs text-gray-600 dark:text-zinc-400">{remaining} task{remaining !== 1 ? 's' : ''} remaining</p>
+          <p className="text-xs text-gray-500 dark:text-blue-200">{remaining} task{remaining !== 1 ? 's' : ''} remaining</p>
         </div>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
-        <span className="hidden text-sm text-gray-600 dark:text-zinc-400 sm:inline">{user?.username}</span>
+        <span className="hidden text-sm text-gray-600 dark:text-blue-100 sm:inline">{user?.username}</span>
 
         <button
           onClick={toggle}
           aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-          className="flex h-11 w-11 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 dark:text-zinc-400 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="flex h-11 w-11 items-center justify-center rounded-full text-white transition focus:outline-none focus:ring-2 focus:ring-blue-400"
+          style={{ backgroundColor: '#113F67' }}
         >
           {dark ? <SunIcon /> : <MoonIcon />}
         </button>
 
         <button
           onClick={logout}
-          className="rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-600"
+          className="rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:border-white/20 dark:text-white dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-red-600"
         >
           Logout
         </button>

@@ -51,11 +51,13 @@ export function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 dark:bg-black">
-      <div className="w-full max-w-sm">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-4" style={{ background: 'radial-gradient(ellipse at 60% 40%, #1a5a8a 0%, #113F67 40%, #0a2440 100%)' }}>
+      <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full opacity-20 blur-3xl" style={{ backgroundColor: '#1a5a8a' }} />
+      <div className="pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full opacity-15 blur-3xl" style={{ backgroundColor: '#113F67' }} />
+      <div className="relative z-10 w-full max-w-sm">
         {/* Avatar overlapping card top */}
         <div className="flex justify-center">
-          <div className="relative z-10 mb-[-2.5rem] flex h-20 w-20 items-center justify-center rounded-full bg-red-600 border-4 border-gray-100 shadow-md dark:border-black">
+          <div className="relative z-10 mb-[-2.5rem] flex h-20 w-20 items-center justify-center rounded-full bg-red-600 border-4 border-black shadow-lg shadow-red-900/50">
             <span className="sr-only">User avatar</span>
             <svg className="h-10 w-10 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.337 0-10 1.676-10 5v2h20v-2c0-3.324-6.663-5-10-5z" />
@@ -64,15 +66,15 @@ export function Login() {
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl bg-white px-8 pb-8 pt-14 shadow-sm dark:bg-zinc-900">
-          <h2 className="mb-6 text-center text-2xl font-bold tracking-widest text-gray-900 uppercase dark:text-white">
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-8 pb-8 pt-14 shadow-2xl backdrop-blur-md">
+          <h2 className="mb-6 text-center text-2xl font-bold tracking-widest text-white uppercase">
             LOGIN
           </h2>
 
           <form onSubmit={onSubmit} noValidate className="space-y-4">
             {/* Email */}
             <div>
-              <div className={`flex items-center overflow-hidden rounded-lg bg-gray-100 dark:bg-zinc-800 ${errors.email ? 'ring-2 ring-red-500' : ''}`}>
+              <div className={`flex items-center overflow-hidden rounded-lg bg-white/10 ${errors.email ? 'ring-2 ring-red-500' : 'ring-1 ring-white/10'}`}>
                 <span className="pl-3 text-red-500 shrink-0"><UserIcon /></span>
                 <input
                   id="email"
@@ -84,7 +86,7 @@ export function Login() {
                   required
                   aria-invalid={!!errors.email}
                   aria-describedby={errors.email ? 'email-error' : undefined}
-                  className="flex-1 bg-transparent px-3 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-zinc-500"
+                  className="flex-1 bg-transparent px-3 py-3 text-sm text-white placeholder:text-gray-400 focus:outline-none"
                 />
               </div>
               {errors.email && (
@@ -94,7 +96,7 @@ export function Login() {
 
             {/* Password */}
             <div>
-              <div className={`flex items-center overflow-hidden rounded-lg bg-gray-100 dark:bg-zinc-800 ${errors.password ? 'ring-2 ring-red-500' : ''}`}>
+              <div className={`flex items-center overflow-hidden rounded-lg bg-white/10 ${errors.password ? 'ring-2 ring-red-500' : 'ring-1 ring-white/10'}`}>
                 <span className="pl-3 text-red-500 shrink-0"><LockIcon /></span>
                 <input
                   id="password"
@@ -106,7 +108,7 @@ export function Login() {
                   required
                   aria-invalid={!!errors.password}
                   aria-describedby={errors.password ? 'password-error' : undefined}
-                  className="flex-1 bg-transparent px-3 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-zinc-500"
+                  className="flex-1 bg-transparent px-3 py-3 text-sm text-white placeholder:text-gray-400 focus:outline-none"
                 />
               </div>
               {errors.password && (
@@ -117,7 +119,7 @@ export function Login() {
             {/* Remember me */}
             <div className="flex items-center gap-2">
               <input type="checkbox" id="remember" className="h-4 w-4 rounded accent-red-600" />
-              <label htmlFor="remember" className="text-sm text-gray-600 select-none dark:text-zinc-400">
+              <label htmlFor="remember" className="select-none text-sm text-gray-300">
                 Remember me
               </label>
             </div>
@@ -142,11 +144,11 @@ export function Login() {
             </button>
           </form>
 
-          <p className="mt-4 text-center text-xs text-gray-400 dark:text-zinc-500">
+          <p className="mt-4 text-center text-xs text-gray-400">
             Forgot Username / Password?
           </p>
 
-          <p className="mt-4 text-center text-sm text-gray-500 dark:text-zinc-400">
+          <p className="mt-4 text-center text-sm text-gray-400">
             No account?{' '}
             <Link to="/register" className="font-semibold text-red-600 hover:underline underline-offset-4">
               Register here

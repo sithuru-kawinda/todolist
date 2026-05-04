@@ -77,17 +77,19 @@ export function Register() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 dark:bg-black">
-      <div className="w-full max-w-sm">
-        <div className="rounded-2xl bg-white px-8 py-8 shadow-sm dark:bg-zinc-900">
-          <h2 className="mb-6 text-center text-2xl font-bold tracking-widest text-gray-900 uppercase dark:text-white">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-4" style={{ background: 'radial-gradient(ellipse at 60% 40%, #1a5a8a 0%, #113F67 40%, #0a2440 100%)' }}>
+      <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full opacity-20 blur-3xl" style={{ backgroundColor: '#1a5a8a' }} />
+      <div className="pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full opacity-15 blur-3xl" style={{ backgroundColor: '#113F67' }} />
+      <div className="relative z-10 w-full max-w-sm">
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-8 py-8 shadow-2xl backdrop-blur-md">
+          <h2 className="mb-6 text-center text-2xl font-bold tracking-widest text-white uppercase">
             SIGN UP
           </h2>
 
           <form onSubmit={onSubmit} noValidate className="space-y-4">
             {/* Username */}
             <div>
-              <div className={`flex items-center overflow-hidden rounded-lg bg-gray-100 dark:bg-zinc-800 ${errors['username'] ? 'ring-2 ring-red-500' : ''}`}>
+              <div className={`flex items-center overflow-hidden rounded-lg bg-white/10 ring-1 ring-white/10 ${errors['username'] ? 'ring-2 ring-red-500' : ''}`}>
                 <span className="pl-3 text-red-500 shrink-0"><UserIcon /></span>
                 <input
                   id="username"
@@ -98,7 +100,7 @@ export function Register() {
                   required
                   aria-invalid={!!errors['username']}
                   aria-describedby={errors['username'] ? 'username-error' : undefined}
-                  className="flex-1 bg-transparent px-3 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-zinc-500"
+                  className="flex-1 bg-transparent px-3 py-3 text-sm text-white placeholder:text-gray-400 focus:outline-none"
                 />
               </div>
               {errors['username'] && (
@@ -108,7 +110,7 @@ export function Register() {
 
             {/* Email */}
             <div>
-              <div className={`flex items-center overflow-hidden rounded-lg bg-gray-100 dark:bg-zinc-800 ${errors['email'] ? 'ring-2 ring-red-500' : ''}`}>
+              <div className={`flex items-center overflow-hidden rounded-lg bg-white/10 ring-1 ring-white/10 ${errors['email'] ? 'ring-2 ring-red-500' : ''}`}>
                 <span className="pl-3 text-red-500 shrink-0"><EnvelopeIcon /></span>
                 <input
                   id="email"
@@ -120,7 +122,7 @@ export function Register() {
                   required
                   aria-invalid={!!errors['email']}
                   aria-describedby={errors['email'] ? 'email-error' : undefined}
-                  className="flex-1 bg-transparent px-3 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-zinc-500"
+                  className="flex-1 bg-transparent px-3 py-3 text-sm text-white placeholder:text-gray-400 focus:outline-none"
                 />
               </div>
               {errors['email'] && (
@@ -130,7 +132,7 @@ export function Register() {
 
             {/* Password */}
             <div>
-              <div className={`flex items-center overflow-hidden rounded-lg bg-gray-100 dark:bg-zinc-800 ${errors['password'] ? 'ring-2 ring-red-500' : ''}`}>
+              <div className={`flex items-center overflow-hidden rounded-lg bg-white/10 ring-1 ring-white/10 ${errors['password'] ? 'ring-2 ring-red-500' : ''}`}>
                 <span className="pl-3 text-red-500 shrink-0"><LockIcon /></span>
                 <input
                   id="password"
@@ -142,7 +144,7 @@ export function Register() {
                   required
                   aria-invalid={!!errors['password']}
                   aria-describedby={errors['password'] ? 'password-error' : undefined}
-                  className="flex-1 bg-transparent px-3 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-zinc-500"
+                  className="flex-1 bg-transparent px-3 py-3 text-sm text-white placeholder:text-gray-400 focus:outline-none"
                 />
               </div>
               {errors['password'] && (
@@ -154,7 +156,7 @@ export function Register() {
                 aria-valuemin={0}
                 aria-valuemax={5}
                 aria-label={`Password strength: ${STRENGTH_LABEL[strength] || 'empty'}`}
-                className="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-zinc-700"
+                className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/20"
               >
                 <div
                   className={`h-full rounded-full transition-all ${STRENGTH_COLOR[strength]}`}
@@ -162,7 +164,7 @@ export function Register() {
                 />
               </div>
               {values.password && (
-                <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">{STRENGTH_LABEL[strength]}</p>
+                <p className="mt-1 text-xs text-gray-300">{STRENGTH_LABEL[strength]}</p>
               )}
             </div>
 
@@ -186,7 +188,7 @@ export function Register() {
             </button>
           </form>
 
-          <p className="mt-5 text-center text-sm text-gray-500 dark:text-zinc-400">
+          <p className="mt-5 text-center text-sm text-gray-300">
             Already have an account?{' '}
             <Link to="/login" className="font-semibold text-red-600 hover:underline underline-offset-4">
               Login here
@@ -196,4 +198,5 @@ export function Register() {
       </div>
     </div>
   );
+
 }

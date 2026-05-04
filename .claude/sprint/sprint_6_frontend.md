@@ -2,15 +2,15 @@
 
 ## 1. Sprint Info
 
-| Field          | Value                                                      |
-|----------------|------------------------------------------------------------|
-| Phase          | P6 (blueprint §18)                                         |
-| Theme          | React UI: scaffold → auth → dashboard → polish             |
-| Day            | 6                                                          |
-| Effort         | 11 h (over one long day or split across 1.5 days)          |
-| Story points   | 11                                                         |
-| Tasks          | T-061 → T-090                                              |
-| Status         | Not started                                                |
+| Field        | Value                                             |
+| ------------ | ------------------------------------------------- |
+| Phase        | P6 (blueprint §18)                                |
+| Theme        | React UI: scaffold → auth → dashboard → polish    |
+| Day          | 6                                                 |
+| Effort       | 11 h (over one long day or split across 1.5 days) |
+| Story points | 11                                                |
+| Tasks        | T-061 → T-090                                     |
+| Status       | Not started                                       |
 
 ## 2. Sprint Goal
 
@@ -22,24 +22,25 @@ A user can do every flow end-to-end in a browser: register, log in, manage todos
 
 ## 4. Scope
 
-| Story / Req.       | Description                                  | Tasks                          |
-|--------------------|----------------------------------------------|--------------------------------|
-| US-01..US-03       | Register / Login / Logout flows              | T-068 → T-074                  |
-| US-04..US-09       | Dashboard CRUD + filter                      | T-075 → T-083                  |
-| US-10              | Mobile usability                             | T-087, T-088, T-090            |
-| UI-001             | Password strength meter                      | T-072                          |
-| UI-004             | Skeleton loading                             | T-083                          |
-| UI-005             | Optimistic updates + rollback                | T-080                          |
-| UI-006             | Filter URL-synced                            | T-079                          |
-| UI-009             | Toast on errors                              | T-084                          |
-| UI-010             | 401 → redirect to `/login`                   | T-065                          |
-| UI-011             | Dark mode persists                           | T-086                          |
-| UI-012             | Visible focus rings                          | T-088                          |
-| UI-013             | App usable at 360 × 640 px                   | T-087                          |
+| Story / Req. | Description                     | Tasks               |
+| ------------ | ------------------------------- | ------------------- |
+| US-01..US-03 | Register / Login / Logout flows | T-068 → T-074       |
+| US-04..US-09 | Dashboard CRUD + filter         | T-075 → T-083       |
+| US-10        | Mobile usability                | T-087, T-088, T-090 |
+| UI-001       | Password strength meter         | T-072               |
+| UI-004       | Skeleton loading                | T-083               |
+| UI-005       | Optimistic updates + rollback   | T-080               |
+| UI-006       | Filter URL-synced               | T-079               |
+| UI-009       | Toast on errors                 | T-084               |
+| UI-010       | 401 → redirect to `/login`      | T-065               |
+| UI-011       | Dark mode persists              | T-086               |
+| UI-012       | Visible focus rings             | T-088               |
+| UI-013       | App usable at 360 × 640 px      | T-087               |
 
 ## 5. Backlog
 
 ### M-9 · Frontend scaffold (2 h)
+
 - [x] T-061 — `frontend/tsconfig.json` strict + path alias `@/`
 - [x] T-062 — Install `react-router-dom`, `axios`, `zod`
 - [x] T-063 — `frontend/.env.example` with `VITE_API_URL`
@@ -49,6 +50,7 @@ A user can do every flow end-to-end in a browser: register, log in, manage todos
 - [x] T-067 — `ui/` primitives — `Button`, `Input`, `Card`
 
 ### M-10 · Frontend auth (3 h)
+
 - [x] T-068 — `schemas/auth.schema.ts` — share Zod schemas with backend
 - [x] T-069 — `api/auth.api.ts` — `register`, `login`, `logout`, `me`
 - [x] T-070 — `context/AuthContext.tsx` + `useAuth` hook
@@ -58,6 +60,7 @@ A user can do every flow end-to-end in a browser: register, log in, manage todos
 - [x] T-074 — On boot, call `me` to populate context
 
 ### M-11 · Dashboard (4 h)
+
 - [x] T-075 — `api/todos.api.ts` — `list`, `create`, `update`, `remove`
 - [x] T-076 — `hooks/useTodos.ts` — fetch + cache + mutations
 - [x] T-077 — `components/TodoForm.tsx` — Enter to add
@@ -69,6 +72,7 @@ A user can do every flow end-to-end in a browser: register, log in, manage todos
 - [x] T-083 — Loading skeleton during initial fetch
 
 ### M-12 · Polish (2 h)
+
 - [x] T-084 — Toast component + global error toast on any 4xx/5xx
 - [x] T-085 — Keyboard: Esc cancels inline edit, Enter saves
 - [x] T-086 — Dark-mode toggle in `localStorage`; default to `prefers-color-scheme`
@@ -92,6 +96,7 @@ A user can do every flow end-to-end in a browser: register, log in, manage todos
 ## 7. Demo Plan
 
 Live walkthrough on desktop and Chrome mobile emulator (iPhone SE):
+
 1. Visit `/` → redirected to `/login`
 2. Click "Register" → fill form → password strength meter rises
 3. Submit → land on dashboard with empty state
@@ -106,18 +111,19 @@ Live walkthrough on desktop and Chrome mobile emulator (iPhone SE):
 
 ## 8. Risks & Mitigations
 
-| Risk                                                          | Mitigation                                                  |
-|---------------------------------------------------------------|-------------------------------------------------------------|
-| CORS blocks cookies in dev                                    | `withCredentials: true` + exact `CORS_ORIGIN` (no `*`)      |
-| `Secure` cookie flag blocks dev (no HTTPS)                    | `COOKIE_SECURE=false` in dev `.env`                         |
-| Optimistic-update race conditions                             | Tag local item with `tempId`; reconcile with server `id`    |
-| Lighthouse a11y < 90 due to color contrast                    | Use `slate-700`/`slate-100` for text (≥ 4.5 : 1)            |
-| Mobile layout breaks on filter tabs                           | Test at 360 px during T-079, not at the end (T-087)         |
-| Sharing schemas between backend & frontend gets messy         | Copy schemas now; consider a shared package only if v2       |
+| Risk                                                  | Mitigation                                               |
+| ----------------------------------------------------- | -------------------------------------------------------- |
+| CORS blocks cookies in dev                            | `withCredentials: true` + exact `CORS_ORIGIN` (no `*`)   |
+| `Secure` cookie flag blocks dev (no HTTPS)            | `COOKIE_SECURE=false` in dev `.env`                      |
+| Optimistic-update race conditions                     | Tag local item with `tempId`; reconcile with server `id` |
+| Lighthouse a11y < 90 due to color contrast            | Use `slate-700`/`slate-100` for text (≥ 4.5 : 1)         |
+| Mobile layout breaks on filter tabs                   | Test at 360 px during T-079, not at the end (T-087)      |
+| Sharing schemas between backend & frontend gets messy | Copy schemas now; consider a shared package only if v2   |
 
 ## 9. Daily Standup
 
 **Day 6 — yyyy-mm-dd**
+
 - Yesterday: Sprint 5 complete (T-047 → T-060)
 - Today: T-061 → T-090 (M-9 → M-12)
 - Blockers:
@@ -139,5 +145,6 @@ Live walkthrough on desktop and Chrome mobile emulator (iPhone SE):
 ## 12. Handoff to Next Sprint
 
 After this sprint, **Sprint 7 (Hardening & Release)** can:
+
 - Run a full security pass against the live UI
 - Tag and ship `v1.0.0`

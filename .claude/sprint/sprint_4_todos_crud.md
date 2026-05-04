@@ -2,15 +2,15 @@
 
 ## 1. Sprint Info
 
-| Field          | Value                                                      |
-|----------------|------------------------------------------------------------|
-| Phase          | P4 (blueprint §18)                                         |
-| Theme          | Full CRUD on todos with per-user ownership enforcement     |
-| Day            | 4                                                          |
-| Effort         | 4 h                                                        |
-| Story points   | 4                                                          |
-| Tasks          | T-036 → T-046                                              |
-| Status         | Not started                                                |
+| Field        | Value                                                  |
+| ------------ | ------------------------------------------------------ |
+| Phase        | P4 (blueprint §18)                                     |
+| Theme        | Full CRUD on todos with per-user ownership enforcement |
+| Day          | 4                                                      |
+| Effort       | 4 h                                                    |
+| Story points | 4                                                      |
+| Tasks        | T-036 → T-046                                          |
+| Status       | Not started                                            |
 
 ## 2. Sprint Goal
 
@@ -22,22 +22,23 @@ An authenticated user can create, list (with pagination + status filter), get on
 
 ## 4. Scope
 
-| Story / Req. | Description                                                 | Tasks                       |
-|--------------|-------------------------------------------------------------|-----------------------------|
-| US-04        | Create todo                                                 | T-036, T-041, T-043, T-044  |
-| US-05        | List todos                                                  | T-037, T-041, T-043, T-044  |
-| US-06        | Toggle complete                                             | T-039, T-041, T-043, T-044  |
-| US-07        | Edit todo                                                   | T-039, T-041, T-043, T-044  |
-| US-08        | Delete todo                                                 | T-040, T-041, T-043, T-044  |
-| US-09        | Filter by All / Active / Completed                          | T-037, T-041                |
-| FR-013       | Cursor pagination (`?limit=20&cursor=...`)                  | T-037, T-041                |
-| FR-019       | Ownership check inside use cases                            | T-038, T-039, T-040         |
-| FR-020 / SEC-015 | Cross-user access returns `404`                         | T-038, T-039, T-040, T-045  |
-| EC-07        | `PATCH {}` returns `400`                                    | T-041, T-046                |
+| Story / Req.     | Description                                | Tasks                      |
+| ---------------- | ------------------------------------------ | -------------------------- |
+| US-04            | Create todo                                | T-036, T-041, T-043, T-044 |
+| US-05            | List todos                                 | T-037, T-041, T-043, T-044 |
+| US-06            | Toggle complete                            | T-039, T-041, T-043, T-044 |
+| US-07            | Edit todo                                  | T-039, T-041, T-043, T-044 |
+| US-08            | Delete todo                                | T-040, T-041, T-043, T-044 |
+| US-09            | Filter by All / Active / Completed         | T-037, T-041               |
+| FR-013           | Cursor pagination (`?limit=20&cursor=...`) | T-037, T-041               |
+| FR-019           | Ownership check inside use cases           | T-038, T-039, T-040        |
+| FR-020 / SEC-015 | Cross-user access returns `404`            | T-038, T-039, T-040, T-045 |
+| EC-07            | `PATCH {}` returns `400`                   | T-041, T-046               |
 
 ## 5. Backlog
 
 ### M-6 · Todos CRUD feature
+
 - [ ] T-036 — `application/todos/create.uc.ts`
 - [ ] T-037 — `application/todos/list.uc.ts` (accepts `userId, limit, cursor, status`)
 - [ ] T-038 — `application/todos/get.uc.ts` (owner check; foreign → `NotFoundError`)
@@ -66,6 +67,7 @@ An authenticated user can create, list (with pagination + status filter), get on
 ## 7. Demo Plan
 
 Logged in as User A with cookie jar:
+
 1. POST `/api/todos` with `{ title: "" }` → 400
 2. POST `/api/todos` ×3 with valid titles → 201 each
 3. GET `/api/todos` → 3 items in `created_at DESC` order
@@ -76,23 +78,22 @@ Logged in as User A with cookie jar:
 8. DELETE same id again → 404
 9. PATCH `/api/todos/<id>` with `{}` → 400
 
-Then with User B's cookie:
-10. GET `/api/todos/<User-A-todo-id>` → 404 (NOT 403) — SEC-015
-11. DELETE `/api/todos/<User-A-todo-id>` → 404; verify in DB the row still exists
+Then with User B's cookie: 10. GET `/api/todos/<User-A-todo-id>` → 404 (NOT 403) — SEC-015 11. DELETE `/api/todos/<User-A-todo-id>` → 404; verify in DB the row still exists
 
 ## 8. Risks & Mitigations
 
-| Risk                                                       | Mitigation                                                |
-|------------------------------------------------------------|-----------------------------------------------------------|
-| Forgetting ownership check → security hole                 | Every read/update/delete use case fetches → compares `userId` first |
-| Returning `403` on foreign access leaks existence          | Use cases throw `NotFoundError`, not `ForbiddenError`     |
-| `PATCH {}` accepted with no field changes                  | Schema requires at least one of `title|description|completed` |
-| DTO leaks fields                                           | Always pass through `todoToDto`; never `res.json(rawRow)` |
-| Cursor pagination off-by-one                               | Test with exactly `limit` items and `limit + 1` items     |
+| Risk                                              | Mitigation                                                          |
+| ------------------------------------------------- | ------------------------------------------------------------------- | ----------- | ---------- |
+| Forgetting ownership check → security hole        | Every read/update/delete use case fetches → compares `userId` first |
+| Returning `403` on foreign access leaks existence | Use cases throw `NotFoundError`, not `ForbiddenError`               |
+| `PATCH {}` accepted with no field changes         | Schema requires at least one of `title                              | description | completed` |
+| DTO leaks fields                                  | Always pass through `todoToDto`; never `res.json(rawRow)`           |
+| Cursor pagination off-by-one                      | Test with exactly `limit` items and `limit + 1` items               |
 
 ## 9. Daily Standup
 
 **Day 4 — yyyy-mm-dd**
+
 - Yesterday: Sprint 3 complete (T-027 → T-035)
 - Today: T-036 → T-046
 - Blockers:
@@ -113,5 +114,6 @@ Then with User B's cookie:
 ## 12. Handoff to Next Sprint
 
 After this sprint, **Sprint 5 (Middleware & Tests)** can:
+
 - Build cross-cutting middleware (error handler, rate limiter, request ID) on top of working endpoints
 - Write integration tests against a complete API surface

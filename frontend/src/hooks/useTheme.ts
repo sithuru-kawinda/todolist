@@ -4,7 +4,7 @@ function getInitialDark(): boolean {
   const saved = localStorage.getItem('theme');
   if (saved === 'dark') return true;
   if (saved === 'light') return false;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return true;
 }
 
 export function useTheme() {
