@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from 'react';
+import { useState, type DragEvent, type KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import type { Todo } from '../types/models.js';
 
@@ -40,16 +40,24 @@ function KanbanCard({ todo, onToggle, onUpdate, onRemove }: CardProps) {
     if (e.key === 'Escape') { setEditTitle(todo.title); setEditing(false); }
   }
 
+  function onDragStart(e: DragEvent) {
+    e.dataTransfer.setData('todoId', todo.id);
+    e.dataTransfer.effectAllowed = 'move';
+  }
+
   return (
-    <div className="rounded-xl border border-gray-100 p-4 shadow-sm transition dark:border-white/10" style={{ backgroundColor: 'var(--card-bg)' }}>
+    <div
+      draggable
+      onDragStart={onDragStart}
+      className="cursor-grab rounded-xl border border-gray-100 p-4 shadow-sm transition active:cursor-grabbing active:opacity-60 dark:border-white/10"
+      style={{ backgroundColor: 'var(--card-bg)' }}
+    >
       <div className="flex items-start gap-3">
         <button
           onClick={() => onToggle(todo)}
           aria-label={`Advance "${todo.title}"`}
           className={`mt-0.5 h-5 w-5 shrink-0 rounded-full border-2 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 ${
-            todo.completed
-              ? 'border-red-600 bg-red-600'
-              : 'border-gray-300 hover:border-red-400'
+            todo.completed ? 'border-red-600 bg-red-600' : 'border-gray-300 hover:border-red-400'
           }`}
         />
         <div className="min-w-0 flex-1">
@@ -62,7 +70,7 @@ function KanbanCard({ todo, onToggle, onUpdate, onRemove }: CardProps) {
               onBlur={saveEdit}
               aria-label="Edit task title"
               className="w-full rounded px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500 dark:text-white"
-            style={{ backgroundColor: 'var(--input-bg)' }}
+              style={{ backgroundColor: 'var(--input-bg)' }}
             />
           ) : (
             <Link
@@ -110,11 +118,37 @@ interface KanbanColumnProps {
   onToggle: (todo: Todo) => void;
   onUpdate: (id: string, title: string) => void;
   onRemove: (id: string) => void;
+  onDrop: (todoId: string) => void;
 }
 
-export function KanbanColumn({ title, dot, todos, onToggle, onUpdate, onRemove }: KanbanColumnProps) {
+export function KanbanColumn({ title, dot, todos, onToggle, onUpdate, onRemove, onDrop }: KanbanColumnProps) {
+  const [dragOver, setDragOver] = useState(false);
+
+  function handleDragOver(e: DragEvent) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOver(true);
+  }
+
+  function handleDragLeave() {
+    setDragOver(false);
+  }
+
+  function handleDrop(e: DragEvent) {
+    e.preventDefault();
+    setDragOver(false);
+    const todoId = e.dataTransfer.getData('todoId');
+    if (todoId) onDrop(todoId);
+  }
+
   return (
-    <div className="flex flex-col rounded-2xl shadow-sm" style={{ backgroundColor: 'var(--column-bg)' }}>
+    <div
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className={`flex flex-col rounded-2xl shadow-sm transition-all ${dragOver ? 'ring-2 ring-red-500 ring-offset-2 brightness-110' : ''}`}
+      style={{ backgroundColor: 'var(--column-bg)' }}
+    >
       <div className="flex items-center gap-2.5 border-b border-white/10 px-5 py-4">
         <span className={`h-2.5 w-2.5 rounded-full ${dot}`} />
         <h2 className="font-semibold text-gray-800 dark:text-white">{title}</h2>
@@ -124,7 +158,9 @@ export function KanbanColumn({ title, dot, todos, onToggle, onUpdate, onRemove }
       </div>
       <div className="flex-1 space-y-2.5 p-3">
         {todos.length === 0 ? (
-          <p className="py-8 text-center text-sm text-gray-400 dark:text-blue-200">No tasks</p>
+          <p className={`py-8 text-center text-sm transition ${dragOver ? 'text-red-400' : 'text-gray-400 dark:text-blue-200'}`}>
+            {dragOver ? 'Drop here' : 'No tasks'}
+          </p>
         ) : (
           todos.map((t) => (
             <KanbanCard key={t.id} todo={t} onToggle={onToggle} onUpdate={onUpdate} onRemove={onRemove} />

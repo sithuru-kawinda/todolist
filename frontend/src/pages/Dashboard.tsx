@@ -14,7 +14,7 @@ export function Dashboard() {
       return s ? new Set(JSON.parse(s) as string[]) : new Set<string>();
     } catch {
       return new Set<string>();
-    }
+    } 
   });
 
   useEffect(() => {
@@ -45,6 +45,21 @@ export function Dashboard() {
     remove(id);
   }
 
+  function handleDrop(todoId: string, column: 'todo' | 'active' | 'done') {
+    const todo = todos.find((t) => t.id === todoId);
+    if (!todo) return;
+    if (column === 'todo') {
+      setInProgressIds((prev) => { const s = new Set(prev); s.delete(todoId); return s; });
+      if (todo.completed) toggle(todo);
+    } else if (column === 'active') {
+      setInProgressIds((prev) => new Set([...prev, todoId]));
+      if (todo.completed) toggle(todo);
+    } else {
+      setInProgressIds((prev) => { const s = new Set(prev); s.delete(todoId); return s; });
+      if (!todo.completed) toggle(todo);
+    }
+  }
+
   return (
     <div className="min-h-screen text-gray-900 dark:text-white" style={{ background: 'var(--dash-bg)' }}>
       <Navbar remaining={remaining} />
@@ -67,6 +82,7 @@ export function Dashboard() {
               onToggle={handleToggle}
               onUpdate={update}
               onRemove={handleRemove}
+              onDrop={(id) => handleDrop(id, 'todo')}
             />
             <KanbanColumn
               title="In Progress"
@@ -75,6 +91,7 @@ export function Dashboard() {
               onToggle={handleToggle}
               onUpdate={update}
               onRemove={handleRemove}
+              onDrop={(id) => handleDrop(id, 'active')}
             />
             <KanbanColumn
               title="Done"
@@ -83,6 +100,7 @@ export function Dashboard() {
               onToggle={handleToggle}
               onUpdate={update}
               onRemove={handleRemove}
+              onDrop={(id) => handleDrop(id, 'done')}
             />
           </div>
         )}
