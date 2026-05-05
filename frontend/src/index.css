@@ -6,4 +6,26 @@
   body {
     font-feature-settings: 'cv11', 'ss01';
   }
+
+  :root {
+    --dash-bg: #ffffff;
+    --nav-bg: #ffffff;
+    --column-bg: #f3f4f6;
+    --card-bg: #ffffff;
+    --input-bg: #f3f4f6;
+    --count-bg: #e5e7eb;
+    --count-color: #4b5563;
+    --no-task-color: #9ca3af;
+  }
+
+  html.dark {
+    --dash-bg: radial-gradient(ellipse at 60% 40%, #1a5a8a 0%, #113F67 40%, #0a2440 100%);
+    --nav-bg: #0d3356;
+    --column-bg: #0f3a5e;
+    --card-bg: #163d61;
+    --input-bg: #163d61;
+    --count-bg: #1a5a8a;
+    --count-color: #bfdbfe;
+    --no-task-color: #93c5fd;
+  }
 }

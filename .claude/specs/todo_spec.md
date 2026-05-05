@@ -107,8 +107,8 @@ A registered user who logs in daily to manage personal tasks.
 
 | Endpoint                  | 200 | 201 | 204 | 400 | 401 | 403 | 404 | 409 | 429 | 500 |
 |---------------------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-| POST `/auth/register`     |     | ✓   |     | ✓   |     |     |     | ✓   | ✓   | ✓   |
-| POST `/auth/login`        | ✓   |     |     | ✓   | ✓   |     |     |     | ✓   | ✓   |
+| POST `/auth/register`     |     | ✓   |     | ✓   |     |    |     | ✓   | ✓   | ✓   |
+| POST `/auth/login`        | ✓   |     |     | ✓   | ✓   |    |     |     | ✓   | ✓   |
 | POST `/auth/logout`       |     |     | ✓   |     | ✓   |     |     |     |     | ✓   |
 | GET  `/auth/me`           | ✓   |     |     |     | ✓   |     |     |     |     | ✓   |
 | POST `/todos`             |     | ✓   |     | ✓   | ✓   |     |     |     | ✓   | ✓   |

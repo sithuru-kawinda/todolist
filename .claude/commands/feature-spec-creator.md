@@ -23,11 +23,11 @@ If the working tree is dirty (any `M` or `??` lines that aren't `.claude/`), sto
 
 Derive three values from the user's input:
 
-| Value | Rule | Example |
-|-------|------|---------|
-| **Title** | Title Case, keep meaningful words | "Todo Priority Levels" |
-| **Slug** | kebab-case, a–z 0–9 hyphens only, ≤ 40 chars | `todo-priority-levels` |
-| **Branch** | `feature/<slug>` | `feature/todo-priority-levels` |
+| Value      | Rule                                         | Example                        |
+| ---------- | -------------------------------------------- | ------------------------------ |
+| **Title**  | Title Case, keep meaningful words            | "Todo Priority Levels"         |
+| **Slug**   | kebab-case, a–z 0–9 hyphens only, ≤ 40 chars | `todo-priority-levels`         |
+| **Branch** | `feature/<slug>`                             | `feature/todo-priority-levels` |
 
 If the description is too vague to spec (< 3 words, or no clear user-facing goal), ask before continuing:
 
@@ -45,27 +45,28 @@ If the branch already exists, append `-01`, `-02`, … until the name is free.
 
 **Core — always read these three:**
 
-| File | Purpose |
 |------|---------|
+| File | Purpose |
 | `.claude/todo_blueprint.md` | Binding spec — re-read §3 (layers), §6 (API contract), §8 (security), §18 (phases) |
 | `.claude/todo_spec.md` | Validation rules (§5), security requirements (§6), edge cases (§11) |
 | `.claude/specs/template.md` | Template to follow exactly |
 
 **Skill references — read by feature type:**
 
-| Feature touches… | Also read |
-|-----------------|-----------|
+| Feature touches…                          | Also read                                                      |
+| ----------------------------------------- | -------------------------------------------------------------- |
 | Backend (use cases, repos, API endpoints) | `SKILL.md` (root) sections 1–2 (security rules + code quality) |
-| TypeScript types / strict mode | `.claude/skills/typescript/SKILL.md` |
-| Frontend (pages, components, Tailwind) | `.claude/skills/tailwind/SKILL.md` (if it exists) |
-| Auth / JWT / blacklist | Blueprint §8–§9, `todo_spec.md` §6 |
-| DB schema / migrations | Blueprint §4 file tree, `todo_spec.md` §5 |
+| TypeScript types / strict mode            | `.claude/skills/typescript/SKILL.md`                           |
+| Frontend (pages, components, Tailwind)    | `.claude/skills/tailwind/SKILL.md` (if it exists)              |
+| Auth / JWT / blacklist                    | Blueprint §8–§9, `todo_spec.md` §6                             |
+| DB schema / migrations                    | Blueprint §4 file tree, `todo_spec.md` §5                      |
 
 Only read the files relevant to the feature — don't load everything.
 
 ## 5. Determine Scope
 
 Before writing the spec, state in 2–3 sentences:
+
 - Which Clean Architecture layers this feature touches (Domain / Application / Infrastructure / Presentation / Frontend)
 - What new endpoints, use cases, or repo methods are needed
 - Whether a DB migration is required
@@ -107,14 +108,14 @@ Next steps:
 
 ## Errors
 
-| Issue | Action |
-|-------|--------|
-| Dirty working tree | Abort — tell user to commit/stash first |
-| Vague description (< 3 words, no clear goal) | Ask for goal, users, and functionality before continuing |
-| Branch name collision | Append `-01`, `-02`, … |
-| `_specs/template.md` missing | Warn user, continue with built-in template structure |
-| Missing skill reference file | Warn and continue — don't block on missing optional refs |
-| Feature conflicts with blueprint §13 (Out of Scope) | Surface the conflict, ask user before proceeding |
+| Issue                                               | Action                                                   |
+| --------------------------------------------------- | -------------------------------------------------------- |
+| Dirty working tree                                  | Abort — tell user to commit/stash first                  |
+| Vague description (< 3 words, no clear goal)        | Ask for goal, users, and functionality before continuing |
+| Branch name collision                               | Append `-01`, `-02`, …                                   |
+| `_specs/template.md` missing                        | Warn user, continue with built-in template structure     |
+| Missing skill reference file                        | Warn and continue — don't block on missing optional refs |
+| Feature conflicts with blueprint §13 (Out of Scope) | Surface the conflict, ask user before proceeding         |
 
 ## Example
 
@@ -141,4 +142,5 @@ Next steps:
 ```
 
 ---
+
 v1.0.0

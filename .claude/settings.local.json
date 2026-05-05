@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(timeout 10 npm run dev)"
+      "Bash(timeout 10 npm run dev)",
+      "Bash(node -e ' *)",
+      "Bash(npx lighthouse *)"
     ]
   }
 }

@@ -2,15 +2,15 @@
 
 ## 1. Sprint Info
 
-| Field          | Value                                                       |
-|----------------|-------------------------------------------------------------|
-| Phase          | P5 (blueprint §18)                                          |
-| Theme          | Cross-cutting middleware + automated test suite             |
-| Day            | 5                                                           |
-| Effort         | 6 h                                                         |
-| Story points   | 6                                                           |
-| Tasks          | T-047 → T-060                                               |
-| Status         | Not started                                                 |
+| Field        | Value                                           |
+| ------------ | ----------------------------------------------- |
+| Phase        | P5 (blueprint §18)                              |
+| Theme        | Cross-cutting middleware + automated test suite |
+| Day          | 5                                               |
+| Effort       | 6 h                                             |
+| Story points | 6                                               |
+| Tasks        | T-047 → T-060                                   |
+| Status       | Not started                                     |
 
 ## 2. Sprint Goal
 
@@ -22,19 +22,20 @@ The backend has central error handling, rate limits, request IDs, security heade
 
 ## 4. Scope
 
-| ID                            | Requirement                                            | Tasks                |
-|-------------------------------|--------------------------------------------------------|----------------------|
-| Blueprint §6 (error envelope) | Single error shape across all 4xx/5xx                  | T-048                |
-| SEC-008 / SEC-009             | Rate limits 5/15min auth, 100/min global               | T-049                |
-| SEC-010                       | 10 KB body cap                                         | T-050                |
-| SEC-011 / SEC-012             | Helmet + strict CORS                                   | T-050                |
-| SEC-017                       | Logger redaction                                       | T-052                |
-| NFR-007                       | Request ID on every log line                           | T-047, T-052         |
-| Spec §12.1                    | Must-have integration tests                            | T-053 → T-060        |
+| ID                            | Requirement                              | Tasks         |
+| ----------------------------- | ---------------------------------------- | ------------- |
+| Blueprint §6 (error envelope) | Single error shape across all 4xx/5xx    | T-048         |
+| SEC-008 / SEC-009             | Rate limits 5/15min auth, 100/min global | T-049         |
+| SEC-010                       | 10 KB body cap                           | T-050         |
+| SEC-011 / SEC-012             | Helmet + strict CORS                     | T-050         |
+| SEC-017                       | Logger redaction                         | T-052         |
+| NFR-007                       | Request ID on every log line             | T-047, T-052  |
+| Spec §12.1                    | Must-have integration tests              | T-053 → T-060 |
 
 ## 5. Backlog
 
 ### M-7 · Cross-cutting middleware
+
 - [ ] T-047 — `requestId.mw` — UUID per request, sets `X-Request-Id`
 - [ ] T-048 — `error.mw` — `ZodError` → 400 + fields; `DomainError` → mapped; else → 500 generic
 - [ ] T-049 — `rateLimit.mw` — 5/15min on `/auth/*`; 100/min global
@@ -43,6 +44,7 @@ The backend has central error handling, rate limits, request IDs, security heade
 - [ ] T-052 — `pino-http` access log middleware with redaction (cookie, password, token)
 
 ### M-8 · Backend tests
+
 - [ ] T-053 — `vitest` config; `tests/helpers/db.ts` builds fresh `:memory:` DB per file
 - [ ] T-054 — Unit tests for all 9 use cases (mocked repos): happy path + each thrown error
 - [ ] T-055 — Schema tests — accept canonical example, reject one example per rule
@@ -75,17 +77,18 @@ The backend has central error handling, rate limits, request IDs, security heade
 
 ## 8. Risks & Mitigations
 
-| Risk                                                  | Mitigation                                                  |
-|-------------------------------------------------------|-------------------------------------------------------------|
-| Rate-limit tests flaky (real time)                    | `vitest` fake timers (`vi.useFakeTimers()`)                 |
-| In-memory SQLite drifts from file DB schema           | Same migration runner used in test setup                    |
-| Coverage gate temptation → write thin tests           | Reviewer checks tests assert behavior, not just statements  |
-| Logger redaction silently regresses                   | Add a test: log `{ password: 'p' }`, assert `[Redacted]`    |
-| CORS misconfig only caught when frontend joins        | Add an integration test simulating a cross-origin preflight |
+| Risk                                           | Mitigation                                                  |
+| ---------------------------------------------- | ----------------------------------------------------------- |
+| Rate-limit tests flaky (real time)             | `vitest` fake timers (`vi.useFakeTimers()`)                 |
+| In-memory SQLite drifts from file DB schema    | Same migration runner used in test setup                    |
+| Coverage gate temptation → write thin tests    | Reviewer checks tests assert behavior, not just statements  |
+| Logger redaction silently regresses            | Add a test: log `{ password: 'p' }`, assert `[Redacted]`    |
+| CORS misconfig only caught when frontend joins | Add an integration test simulating a cross-origin preflight |
 
 ## 9. Daily Standup
 
 **Day 5 — yyyy-mm-dd**
+
 - Yesterday: Sprint 4 complete (T-036 → T-046)
 - Today: T-047 → T-060 (start with M-7, then M-8)
 - Blockers:
@@ -107,6 +110,7 @@ The backend has central error handling, rate limits, request IDs, security heade
 ## 12. Handoff to Next Sprint
 
 After this sprint, **Sprint 6 (Frontend)** can rely on:
+
 - A stable, tested API
 - Consistent error envelope (`{ error: { code, message, fields? } }`) for the Axios interceptor
 - A `/healthz` probe to confirm the backend is up before running e2e flows
