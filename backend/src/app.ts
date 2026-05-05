@@ -17,10 +17,12 @@ export function createApp(): express.Express {
   app.use(helmet());
   app.use(
     cors({
-      origin: env.CORS_ORIGIN,
+      // In development allow all origins (covers web, emulator, physical device, Expo Go).
+      // In production lock down to the configured frontend URL.
+      origin: env.NODE_ENV === 'development' ? true : env.CORS_ORIGIN,
       credentials: true,
       methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
     }),
   );
   app.use(compression());

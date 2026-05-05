@@ -28,7 +28,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
       ...cookieOptions,
       expires: token.expiresAt,
     });
-    res.status(200).json({ data: { user } });
+    res.status(200).json({ data: { user, token: token.token } });
   } catch (err) {
     next(err);
   }

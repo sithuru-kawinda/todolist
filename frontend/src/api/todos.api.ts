@@ -1,5 +1,5 @@
 import { api } from './axios';
-import type { Todo, TodoStatus } from '../types/models';
+import type { Todo, TodoStatus, TodoColumnStatus } from '../types/models';
 
 export interface TodoListResponse {
   items: Todo[];
@@ -15,7 +15,10 @@ export const todosApi = {
     const { data } = await api.post('/todos', { title, description });
     return data.data;
   },
-  async update(id: string, patch: Partial<Pick<Todo, 'title' | 'description' | 'completed'>>): Promise<Todo> {
+  async update(
+    id: string,
+    patch: Partial<Pick<Todo, 'title' | 'description' | 'completed'>> & { status?: TodoColumnStatus },
+  ): Promise<Todo> {
     const { data } = await api.patch(`/todos/${id}`, patch);
     return data.data;
   },

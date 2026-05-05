@@ -1,4 +1,4 @@
-import type { Todo, TodoStatusFilter } from '../entities/Todo.js';
+import type { Todo, TodoColumnStatus, TodoStatusFilter } from '../entities/Todo.js';
 
 export interface CreateTodoInput {
   userId: string;
@@ -10,6 +10,7 @@ export interface UpdateTodoPatch {
   title?: string;
   description?: string | null;
   completed?: boolean;
+  status?: TodoColumnStatus;
 }
 
 export interface ListTodosOptions {

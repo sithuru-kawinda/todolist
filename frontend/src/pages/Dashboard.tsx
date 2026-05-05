@@ -1,63 +1,39 @@
-import { useEffect, useState } from 'react';
 import { Navbar } from '../components/Navbar.js';
 import { TodoForm } from '../components/TodoForm.js';
 import { KanbanColumn } from '../components/KanbanColumn.js';
 import { useTodos } from '../hooks/useTodos.js';
-import type { Todo } from '../types/models.js';
+import type { Todo, TodoColumnStatus } from '../types/models.js';
+
+const NEXT_STATUS: Record<TodoColumnStatus, TodoColumnStatus> = {
+  todo: 'in_progress',
+  in_progress: 'done',
+  done: 'todo',
+};
+
+const COLUMN_STATUS: Record<'todo' | 'active' | 'done', TodoColumnStatus> = {
+  todo: 'todo',
+  active: 'in_progress',
+  done: 'done',
+};
 
 export function Dashboard() {
-  const { todos, loading, add, toggle, update, remove } = useTodos('all');
+  const { todos, loading, add, update, remove, updateStatus } = useTodos('all');
 
-  const [inProgressIds, setInProgressIds] = useState<Set<string>>(() => {
-    try {
-      const s = localStorage.getItem('todoInProgress');
-      return s ? new Set(JSON.parse(s) as string[]) : new Set<string>();
-    } catch {
-      return new Set<string>();
-    } 
-  });
-
-  useEffect(() => {
-    localStorage.setItem('todoInProgress', JSON.stringify([...inProgressIds]));
-  }, [inProgressIds]);
-
-  const remaining = todos.filter((t) => !t.completed).length;
-  const todoItems = todos.filter((t) => !t.completed && !inProgressIds.has(t.id));
-  const activeItems = todos.filter((t) => !t.completed && inProgressIds.has(t.id));
-  const doneItems = todos.filter((t) => t.completed);
+  const remaining  = todos.filter((t) => !t.completed).length;
+  const todoItems  = todos.filter((t) => t.status === 'todo');
+  const activeItems = todos.filter((t) => t.status === 'in_progress');
+  const doneItems  = todos.filter((t) => t.status === 'done');
 
   function handleToggle(todo: Todo) {
-    if (!todo.completed && !inProgressIds.has(todo.id)) {
-      // To Do → In Progress
-      setInProgressIds((prev) => new Set([...prev, todo.id]));
-    } else if (!todo.completed && inProgressIds.has(todo.id)) {
-      // In Progress → Done
-      setInProgressIds((prev) => { const s = new Set(prev); s.delete(todo.id); return s; });
-      toggle(todo);
-    } else {
-      // Done → To Do
-      toggle(todo);
-    }
-  }
-
-  function handleRemove(id: string) {
-    setInProgressIds((prev) => { const s = new Set(prev); s.delete(id); return s; });
-    remove(id);
+    void updateStatus(todo, NEXT_STATUS[todo.status]);
   }
 
   function handleDrop(todoId: string, column: 'todo' | 'active' | 'done') {
     const todo = todos.find((t) => t.id === todoId);
     if (!todo) return;
-    if (column === 'todo') {
-      setInProgressIds((prev) => { const s = new Set(prev); s.delete(todoId); return s; });
-      if (todo.completed) toggle(todo);
-    } else if (column === 'active') {
-      setInProgressIds((prev) => new Set([...prev, todoId]));
-      if (todo.completed) toggle(todo);
-    } else {
-      setInProgressIds((prev) => { const s = new Set(prev); s.delete(todoId); return s; });
-      if (!todo.completed) toggle(todo);
-    }
+    const target = COLUMN_STATUS[column];
+    if (todo.status === target) return;
+    void updateStatus(todo, target);
   }
 
   return (
@@ -81,7 +57,7 @@ export function Dashboard() {
               todos={todoItems}
               onToggle={handleToggle}
               onUpdate={update}
-              onRemove={handleRemove}
+              onRemove={remove}
               onDrop={(id) => handleDrop(id, 'todo')}
             />
             <KanbanColumn
@@ -90,7 +66,7 @@ export function Dashboard() {
               todos={activeItems}
               onToggle={handleToggle}
               onUpdate={update}
-              onRemove={handleRemove}
+              onRemove={remove}
               onDrop={(id) => handleDrop(id, 'active')}
             />
             <KanbanColumn
@@ -99,7 +75,7 @@ export function Dashboard() {
               todos={doneItems}
               onToggle={handleToggle}
               onUpdate={update}
-              onRemove={handleRemove}
+              onRemove={remove}
               onDrop={(id) => handleDrop(id, 'done')}
             />
           </div>

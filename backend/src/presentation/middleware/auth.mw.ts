@@ -10,7 +10,10 @@ declare module 'express-serve-static-core' {
 
 export async function requireAuth(req: Request, _res: Response, next: NextFunction): Promise<void> {
   try {
-    const token = req.cookies?.access;
+    const cookieToken = req.cookies?.access as string | undefined;
+    const authHeader = req.headers.authorization;
+    const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : undefined;
+    const token = cookieToken ?? bearerToken;
     if (!token) throw new UnauthorizedError('Missing token');
     const payload = container.tokens.verify(token);
     if (await container.blacklist.has(payload.jti)) {

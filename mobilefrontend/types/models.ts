@@ -5,7 +5,6 @@ export interface User {
 }
 
 export type TodoColumnStatus = 'todo' | 'in_progress' | 'done';
-export type TodoStatus = 'all' | 'active' | 'completed'; // used for list filter
 
 export interface Todo {
   id: string;

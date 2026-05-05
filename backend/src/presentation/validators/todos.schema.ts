@@ -17,10 +17,16 @@ export const updateTodoSchema = z
     title: titleSchema.optional(),
     description: descriptionSchema.optional(),
     completed: z.boolean().optional(),
+    status: z.enum(['todo', 'in_progress', 'done']).optional(),
   })
-  .refine((v) => v.title !== undefined || v.description !== undefined || v.completed !== undefined, {
-    message: 'At least one field must be provided',
-  });
+  .refine(
+    (v) =>
+      v.title !== undefined ||
+      v.description !== undefined ||
+      v.completed !== undefined ||
+      v.status !== undefined,
+    { message: 'At least one field must be provided' },
+  );
 
 export const listTodosQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
