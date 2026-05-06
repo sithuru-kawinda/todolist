@@ -36,5 +36,5 @@ export function runMigrations(): void {
 
 if (import.meta.url === `file://${process.argv[1]?.replace(/\\/g, '/')}`) {
   runMigrations();
-  console.log('Migrations applied.');
+  process.stdout.write('Migrations applied.\n');
 }

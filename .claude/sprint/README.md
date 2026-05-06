@@ -22,8 +22,9 @@ See **[run_sprint.md](run_sprint.md)** — operational runbook for daily standup
 | 5 | [sprint_5_middleware_and_tests.md](sprint_5_middleware_and_tests.md)              | P5    | Cross-cutting middleware + tests     | T-047 → T-060 | 6 h    |
 | 6 | [sprint_6_frontend.md](sprint_6_frontend.md)                                      | P6    | React UI + auth + dashboard + polish | T-061 → T-090 | 11 h   |
 | 7 | [sprint_7_hardening_and_release.md](sprint_7_hardening_and_release.md)            | P7    | Security pass + audit + v1.0.0 tag   | T-091 → T-098 | 3 h    |
+| 8 | [sprint_8_mobilefrontend.md](sprint_8_mobilefrontend.md)                          | P8    | Expo mobile: auth + Kanban + perf    | T-099 → T-122 | 7.5 h  |
 
-**Total:** 98 tasks · ~37.5 h · 7 sprints · ~1 working day each
+**Total:** 122 tasks · ~45 h · 8 sprints · ~1 working day each
 
 ---
 

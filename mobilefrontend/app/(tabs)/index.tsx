@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useRef, useState } from 'react';
+import { forwardRef, memo, useCallback, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -7,13 +7,13 @@ import {
   Platform,
   Pressable,
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
@@ -26,6 +26,7 @@ import Animated, {
 import { useAuth } from '@/context/AuthContext';
 import { useTodos } from '@/hooks/useTodos';
 import { Colors } from '@/constants/theme';
+import { Sidebar } from '@/components/Sidebar';
 import type { Todo, TodoColumnStatus } from '@/types/models';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -90,11 +91,11 @@ interface CardProps {
   onDragStart: (todo: Todo) => void;
   onDragUpdate: (absY: number) => void;
   onDragEnd: () => void;
-  onToggle: () => void;
-  onDelete: () => void;
+  onToggle: (todo: Todo) => void;
+  onDelete: (id: string) => void;
 }
 
-function DraggableCard({
+const DraggableCard = memo(function DraggableCard({
   todo,
   draggingId,
   dragAbsX,
@@ -141,10 +142,13 @@ function DraggableCard({
     opacity: draggingId.value === todoId ? 0.25 : 1,
   }));
 
+  const handleTogglePress = useCallback(() => onToggle(todo), [onToggle, todo]);
+  const handleDeletePress = useCallback(() => onDelete(todo.id), [onDelete, todo.id]);
+
   return (
     <GestureDetector gesture={gesture}>
       <Animated.View style={[styles.card, cardStyle]}>
-        <Pressable onPress={onToggle} style={styles.cardBody} hitSlop={8}>
+        <Pressable onPress={handleTogglePress} style={styles.cardBody} hitSlop={8}>
           <View style={[styles.checkbox, todo.completed && styles.checkboxDone]}>
             {todo.completed && <Text style={styles.checkmark}>✓</Text>}
           </View>
@@ -155,13 +159,13 @@ function DraggableCard({
             {todo.title}
           </Text>
         </Pressable>
-        <Pressable onPress={onDelete} style={styles.deleteBtn} hitSlop={8}>
+        <Pressable onPress={handleDeletePress} style={styles.deleteBtn} hitSlop={8}>
           <Text style={styles.deleteIcon}>✕</Text>
         </Pressable>
       </Animated.View>
     </GestureDetector>
   );
-}
+});
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
 
@@ -180,8 +184,10 @@ const COLUMN_TO_STATUS: Record<ColumnKey, TodoColumnStatus> = {
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const { todos, loading, error, add, remove, refresh, updateStatus } = useTodos();
-  const [newTitle, setNewTitle] = useState('');
   const [adding, setAdding] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const titleRef = useRef('');
+  const inputRef = useRef<TextInput>(null);
 
   // ── drag state ──────────────────────────────────────────────────────────────
   const [draggingTodo, setDraggingTodo] = useState<Todo | null>(null);
@@ -245,11 +251,11 @@ export default function Dashboard() {
     measureSections();
     setDraggingTodo(todo);
     setOverSection(getColumn(todo));
-  }, []); // eslint-disable-line
+  }, []);
 
   const handleDragUpdate = useCallback((absY: number) => {
     setOverSection(getSectionAt(absY));
-  }, []); // eslint-disable-line
+  }, []);
 
   const handleDragEnd = useCallback(() => {
     setDraggingTodo((current) => {
@@ -262,27 +268,32 @@ export default function Dashboard() {
       });
       return null;
     });
-  }, [updateStatus]); // eslint-disable-line
+  }, [updateStatus]);
 
   // ── tap toggle: cycles todo → in_progress → done → todo ────────────────────
 
-  function handleToggle(todo: Todo) {
+  const handleToggle = useCallback((todo: Todo) => {
     void updateStatus(todo, NEXT_STATUS[todo.status] ?? 'todo');
-  }
+  }, [updateStatus]);
 
-  function handleDelete(id: string) {
+  const handleDelete = useCallback((id: string) => {
     Alert.alert('Delete todo', 'Are you sure?', [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Delete', style: 'destructive', onPress: () => void remove(id) },
     ]);
-  }
+  }, [remove]);
 
   async function handleAdd() {
-    const title = newTitle.trim();
+    const title = titleRef.current.trim();
     if (!title) return;
     setAdding(true);
-    try { await add(title); setNewTitle(''); }
-    finally { setAdding(false); }
+    try {
+      await add(title);
+      inputRef.current?.clear();
+      titleRef.current = '';
+    } finally {
+      setAdding(false);
+    }
   }
 
   // ── floating card (animated overlay) ───────────────────────────────────────
@@ -302,8 +313,8 @@ export default function Dashboard() {
     elevation: isDraggingShared.value ? 12 : 0,
   }));
 
-  // Common card props passed to every DraggableCard
-  const dragProps = {
+  // Common card props passed to every DraggableCard — memoized so memo() on DraggableCard is effective
+  const dragProps = useMemo(() => ({
     draggingId,
     dragAbsX,
     dragAbsY,
@@ -311,7 +322,7 @@ export default function Dashboard() {
     onDragStart: handleDragStart,
     onDragUpdate: handleDragUpdate,
     onDragEnd: handleDragEnd,
-  };
+  }), [handleDragStart, handleDragUpdate, handleDragEnd]);
 
   // ── render ──────────────────────────────────────────────────────────────────
 
@@ -320,6 +331,9 @@ export default function Dashboard() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
+          <Pressable onPress={() => setSidebarOpen(true)} style={styles.menuBtn} hitSlop={8}>
+            <Text style={styles.menuIcon}>☰</Text>
+          </Pressable>
           <View style={styles.logo}><Text style={styles.logoCheck}>✓</Text></View>
           <View>
             <Text style={styles.appName}>TodoApp</Text>
@@ -328,8 +342,8 @@ export default function Dashboard() {
         </View>
         <View style={styles.headerRight}>
           <Text style={styles.username}>{user?.username}</Text>
-          <Pressable onPress={() => void logout()} style={styles.logoutBtn}>
-            <Text style={styles.logoutText}>Logout</Text>
+          <Pressable onPress={() => void logout()} style={styles.logoutBtn} hitSlop={8}>
+            <Text style={styles.logoutIcon}>→</Text>
           </Pressable>
         </View>
       </View>
@@ -338,11 +352,11 @@ export default function Dashboard() {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.addBar}>
           <TextInput
+            ref={inputRef}
             style={styles.addInput}
             placeholder="Add a new task…"
             placeholderTextColor={Colors.textMuted}
-            value={newTitle}
-            onChangeText={setNewTitle}
+            onChangeText={(t) => { titleRef.current = t; }}
             onSubmitEditing={handleAdd}
             returnKeyType="done"
             blurOnSubmit={false}
@@ -372,7 +386,7 @@ export default function Dashboard() {
             count={todoItems.length} isOver={overSection === 'todo'} emptyLabel="No tasks to do">
             {todoItems.map((todo) => (
               <DraggableCard key={todo.id} todo={todo} {...dragProps}
-                onToggle={() => handleToggle(todo)} onDelete={() => handleDelete(todo.id)} />
+                onToggle={handleToggle} onDelete={handleDelete} />
             ))}
           </KanbanSection>
 
@@ -380,7 +394,7 @@ export default function Dashboard() {
             count={activeItems.length} isOver={overSection === 'active'} emptyLabel="Nothing in progress">
             {activeItems.map((todo) => (
               <DraggableCard key={todo.id} todo={todo} {...dragProps}
-                onToggle={() => handleToggle(todo)} onDelete={() => handleDelete(todo.id)} />
+                onToggle={handleToggle} onDelete={handleDelete} />
             ))}
           </KanbanSection>
 
@@ -388,11 +402,20 @@ export default function Dashboard() {
             count={doneItems.length} isOver={overSection === 'done'} emptyLabel="Nothing completed yet">
             {doneItems.map((todo) => (
               <DraggableCard key={todo.id} todo={todo} {...dragProps}
-                onToggle={() => handleToggle(todo)} onDelete={() => handleDelete(todo.id)} />
+                onToggle={handleToggle} onDelete={handleDelete} />
             ))}
           </KanbanSection>
         </ScrollView>
       )}
+
+      {/* Left sidebar — overlays all content */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        user={user}
+        onLogout={() => { setSidebarOpen(false); void logout(); }}
+        remaining={remaining}
+      />
 
       {/* Floating drag clone — rendered outside ScrollView so it doesn't scroll */}
       <Animated.View style={[styles.floatingCard, floatingStyle]} pointerEvents="none">
@@ -413,21 +436,24 @@ const styles = StyleSheet.create({
   root:            { flex: 1, backgroundColor: Colors.bgDeep },
   center:          { flex: 1, alignItems: 'center', justifyContent: 'center' },
 
+  // Hamburger
+  menuBtn:         { padding: 4 },
+  menuIcon:        { color: Colors.white, fontSize: 20, fontWeight: 'bold' },
+
   // Header
   header:          { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-                     backgroundColor: Colors.bgMid, paddingHorizontal: 16, paddingVertical: 14,
+                     backgroundColor: Colors.bgMid, paddingHorizontal: 14, paddingVertical: 8,
                      borderBottomWidth: 1, borderBottomColor: Colors.border },
-  headerLeft:      { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  logo:            { width: 36, height: 36, borderRadius: 18, backgroundColor: Colors.accent,
+  headerLeft:      { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  logo:            { width: 28, height: 28, borderRadius: 14, backgroundColor: Colors.accent,
                      alignItems: 'center', justifyContent: 'center' },
-  logoCheck:       { color: Colors.white, fontSize: 16, fontWeight: 'bold' },
-  appName:         { color: Colors.white, fontSize: 15, fontWeight: 'bold' },
-  remaining:       { color: Colors.inProgress, fontSize: 11 },
-  headerRight:     { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  username:        { color: Colors.textSecondary, fontSize: 13 },
-  logoutBtn:       { borderWidth: 1, borderColor: Colors.border, borderRadius: 8,
-                     paddingHorizontal: 10, paddingVertical: 6 },
-  logoutText:      { color: Colors.white, fontSize: 12 },
+  logoCheck:       { color: Colors.white, fontSize: 13, fontWeight: 'bold' },
+  appName:         { color: Colors.white, fontSize: 13, fontWeight: 'bold' },
+  remaining:       { color: Colors.inProgress, fontSize: 10 },
+  headerRight:     { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  username:        { color: Colors.textSecondary, fontSize: 12 },
+  logoutBtn:       { padding: 4 },
+  logoutIcon:      { color: Colors.accent, fontSize: 16, fontWeight: 'bold' },
 
   // Add bar
   addBar:          { flexDirection: 'row', margin: 14, gap: 10 },

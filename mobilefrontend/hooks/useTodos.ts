@@ -50,13 +50,14 @@ export function useTodos() {
     };
   }, [refresh]);
 
-  async function add(title: string): Promise<void> {
+  // Stable refs — all use functional setTodos so they never close over stale state
+  const add = useCallback(async (title: string): Promise<void> => {
     lastMutatedAt.current = Date.now();
     const todo = await todosApi.createTodo(title);
     setTodos((prev) => [todo, ...prev]);
-  }
+  }, []);
 
-  async function toggle(todo: Todo): Promise<void> {
+  const toggle = useCallback(async (todo: Todo): Promise<void> => {
     lastMutatedAt.current = Date.now();
     const optimistic = { ...todo, completed: !todo.completed };
     setTodos((prev) => prev.map((t) => (t.id === todo.id ? optimistic : t)));
@@ -66,20 +67,24 @@ export function useTodos() {
     } catch {
       setTodos((prev) => prev.map((t) => (t.id === todo.id ? todo : t)));
     }
-  }
+  }, []);
 
-  async function remove(id: string): Promise<void> {
+  const remove = useCallback(async (id: string): Promise<void> => {
     lastMutatedAt.current = Date.now();
-    const snapshot = todos;
-    setTodos((prev) => prev.filter((t) => t.id !== id));
+    // Capture snapshot inside the updater so it runs synchronously before re-render
+    let snapshot: Todo[] = [];
+    setTodos((prev) => {
+      snapshot = prev;
+      return prev.filter((t) => t.id !== id);
+    });
     try {
       await todosApi.deleteTodo(id);
     } catch {
       setTodos(snapshot);
     }
-  }
+  }, []);
 
-  async function updateStatus(todo: Todo, status: TodoColumnStatus): Promise<void> {
+  const updateStatus = useCallback(async (todo: Todo, status: TodoColumnStatus): Promise<void> => {
     lastMutatedAt.current = Date.now();
     const optimistic = { ...todo, status, completed: status === 'done' };
     setTodos((prev) => prev.map((t) => (t.id === todo.id ? optimistic : t)));
@@ -89,7 +94,7 @@ export function useTodos() {
     } catch {
       setTodos((prev) => prev.map((t) => (t.id === todo.id ? todo : t)));
     }
-  }
+  }, []);
 
   return { todos, loading, error, add, toggle, remove, refresh, updateStatus };
 }

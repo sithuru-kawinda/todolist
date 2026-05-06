@@ -9,6 +9,7 @@
 | 5      | Middleware & tests      | 6          | 6            | —                |
 | 6      | Frontend                | 11         | 11           | —                |
 | 7      | Hardening & release     | TBD        | —            | —                |
+| 8      | Mobile frontend         | 8          | 8            | —                |
 
 ## Notes
 
