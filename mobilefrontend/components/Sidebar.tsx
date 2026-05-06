@@ -6,6 +6,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Colors } from '@/constants/theme';
+import { useTheme } from '@/context/ThemeContext';
 import type { User } from '@/types/models';
 
 const SIDEBAR_WIDTH = Math.min(Dimensions.get('window').width * 0.72, 280);
@@ -19,6 +20,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen, onClose, user, onLogout, remaining }: SidebarProps) {
+  const { isDark, colors, toggleTheme } = useTheme();
   const translateX = useSharedValue(-SIDEBAR_WIDTH);
   const backdropOpacity = useSharedValue(0);
 
@@ -43,29 +45,35 @@ export function Sidebar({ isOpen, onClose, user, onLogout, remaining }: SidebarP
       </Animated.View>
 
       {/* Sliding panel */}
-      <Animated.View style={[styles.panel, panelStyle]}>
+      <Animated.View style={[styles.panel, panelStyle, { backgroundColor: colors.bgMid, borderRightColor: colors.border }]}>
 
         {/* User section */}
         <View style={styles.userSection}>
           <View style={styles.avatar}>
             <Text style={styles.avatarLabel}>✓</Text>
           </View>
-          <Text style={styles.username}>{user?.username ?? ''}</Text>
-          <Text style={styles.email}>{user?.email ?? ''}</Text>
+          <Text style={[styles.username, { color: colors.text }]}>{user?.username ?? ''}</Text>
+          <Text style={[styles.email, { color: colors.textSecondary }]}>{user?.email ?? ''}</Text>
         </View>
 
-        <View style={styles.divider} />
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
         {/* Nav items */}
         <View style={styles.nav}>
           <View style={styles.navItem}>
             <Text style={styles.navIcon}>▦</Text>
-            <Text style={styles.navText}>Dashboard</Text>
+            <Text style={[styles.navText, { color: colors.text }]}>Dashboard</Text>
             <View style={styles.activeDot} />
           </View>
 
+          {/* Dark / Light toggle */}
+          <Pressable style={styles.navItem} onPress={toggleTheme} hitSlop={8}>
+            <Text style={styles.navIcon}>{isDark ? '☀' : '☾'}</Text>
+            <Text style={[styles.navText, { color: colors.text }]}>{isDark ? 'Light Mode' : 'Dark Mode'}</Text>
+          </Pressable>
+
           <View style={styles.statsRow}>
-            <Text style={styles.statsLabel}>Tasks remaining</Text>
+            <Text style={[styles.statsLabel, { color: colors.textSecondary }]}>Tasks remaining</Text>
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{remaining}</Text>
             </View>
@@ -74,7 +82,7 @@ export function Sidebar({ isOpen, onClose, user, onLogout, remaining }: SidebarP
 
         {/* Logout */}
         <View style={styles.footer}>
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
           <Pressable style={styles.logoutRow} onPress={onLogout} hitSlop={8}>
             <Text style={styles.logoutIcon}>↩</Text>
             <Text style={styles.logoutText}>Logout</Text>

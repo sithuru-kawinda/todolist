@@ -26,6 +26,7 @@ import Animated, {
 import { useAuth } from '@/context/AuthContext';
 import { useTodos } from '@/hooks/useTodos';
 import { Colors } from '@/constants/theme';
+import { useTheme } from '@/context/ThemeContext';
 import { Sidebar } from '@/components/Sidebar';
 import { ToastContainer } from '@/components/ToastContainer';
 import type { Todo, TodoColumnStatus } from '@/types/models';
@@ -50,29 +51,28 @@ const KanbanSection = forwardRef<View, SectionProps>(function KanbanSection(
   { title, dot, count, isOver, emptyLabel, children },
   ref,
 ) {
+  const { colors } = useTheme();
   const hasCards = Array.isArray(children)
     ? children.filter(Boolean).length > 0
     : !!children;
 
   return (
     <View ref={ref}>
-      {/* Section header — highlights blue when a card hovers over it */}
       <View style={[styles.sectionHeader, isOver && styles.sectionHeaderOver]}>
         <View style={[styles.dot, { backgroundColor: isOver ? Colors.inProgress : dot }]} />
-        <Text style={[styles.sectionTitle, isOver && styles.sectionTitleOver]}>
+        <Text style={[styles.sectionTitle, isOver && styles.sectionTitleOver, { color: colors.text }]}>
           {title}
         </Text>
-        <View style={[styles.badge, isOver && styles.badgeOver]}>
+        <View style={[styles.badge, isOver && styles.badgeOver, !isOver && { backgroundColor: colors.bgCard }]}>
           <Text style={styles.badgeText}>{count}</Text>
         </View>
       </View>
 
-      {/* Cards area */}
       <View style={styles.sectionBody}>
         {hasCards ? (
           children
         ) : (
-          <Text style={[styles.emptyLabel, isOver && styles.emptyLabelOver]}>
+          <Text style={[styles.emptyLabel, isOver && styles.emptyLabelOver, { color: colors.textMuted }]}>
             {isOver ? '↓  Drop here' : emptyLabel}
           </Text>
         )}
@@ -108,6 +108,7 @@ const DraggableCard = memo(function DraggableCard({
   onToggle,
   onDelete,
 }: CardProps) {
+  const { colors } = useTheme();
   const todoId = todo.id; // captured by worklet closure
 
   const gesture = Gesture.Pan()
@@ -148,20 +149,20 @@ const DraggableCard = memo(function DraggableCard({
 
   return (
     <GestureDetector gesture={gesture}>
-      <Animated.View style={[styles.card, cardStyle]}>
+      <Animated.View style={[styles.card, cardStyle, { backgroundColor: colors.bgCard, borderColor: colors.border }]}>
         <Pressable onPress={handleTogglePress} style={styles.cardBody} hitSlop={8}>
-          <View style={[styles.checkbox, todo.completed && styles.checkboxDone]}>
+          <View style={[styles.checkbox, todo.completed && styles.checkboxDone, !todo.completed && { borderColor: colors.textSecondary }]}>
             {todo.completed && <Text style={styles.checkmark}>✓</Text>}
           </View>
           <Text
-            style={[styles.cardTitle, todo.completed && styles.cardTitleDone]}
+            style={[styles.cardTitle, todo.completed && styles.cardTitleDone, { color: todo.completed ? colors.textMuted : colors.text }]}
             numberOfLines={2}
           >
             {todo.title}
           </Text>
         </Pressable>
         <Pressable onPress={handleDeletePress} style={styles.deleteBtn} hitSlop={8}>
-          <Text style={styles.deleteIcon}>✕</Text>
+          <Text style={[styles.deleteIcon, { color: colors.textMuted }]}>✕</Text>
         </Pressable>
       </Animated.View>
     </GestureDetector>
@@ -185,6 +186,7 @@ const COLUMN_TO_STATUS: Record<ColumnKey, TodoColumnStatus> = {
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const { todos, loading, error, add, remove, refresh, updateStatus } = useTodos();
+  const { isDark, colors, toggleTheme } = useTheme();
   const [adding, setAdding] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const titleRef = useRef('');
@@ -328,21 +330,24 @@ export default function Dashboard() {
   // ── render ──────────────────────────────────────────────────────────────────
 
   return (
-    <SafeAreaView style={styles.root}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.bgDeep }]}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: colors.bgMid, borderBottomColor: colors.border }]}>
         <View style={styles.headerLeft}>
           <Pressable onPress={() => setSidebarOpen(true)} style={styles.menuBtn} hitSlop={8}>
-            <Text style={styles.menuIcon}>☰</Text>
+            <Text style={[styles.menuIcon, { color: colors.text }]}>☰</Text>
           </Pressable>
           <View style={styles.logo}><Text style={styles.logoCheck}>✓</Text></View>
           <View>
-            <Text style={styles.appName}>TodoApp</Text>
+            <Text style={[styles.appName, { color: colors.text }]}>TodoApp</Text>
             <Text style={styles.remaining}>{remaining} task{remaining !== 1 ? 's' : ''} remaining</Text>
           </View>
         </View>
         <View style={styles.headerRight}>
-          <Text style={styles.username}>{user?.username}</Text>
+          <Text style={[styles.username, { color: colors.textSecondary }]}>{user?.username}</Text>
+          <Pressable onPress={toggleTheme} style={styles.themeBtn} hitSlop={8}>
+            <Text style={styles.themeIcon}>{isDark ? '☀' : '☾'}</Text>
+          </Pressable>
           <Pressable onPress={() => void logout()} style={styles.logoutBtn} hitSlop={8}>
             <Text style={styles.logoutIcon}>→</Text>
           </Pressable>
@@ -354,9 +359,9 @@ export default function Dashboard() {
         <View style={styles.addBar}>
           <TextInput
             ref={inputRef}
-            style={styles.addInput}
+            style={[styles.addInput, { backgroundColor: colors.inputBg, color: colors.text, borderColor: colors.border }]}
             placeholder="Add a new task…"
-            placeholderTextColor={Colors.textMuted}
+            placeholderTextColor={colors.textMuted}
             onChangeText={(t) => { titleRef.current = t; }}
             onSubmitEditing={handleAdd}
             returnKeyType="done"
@@ -370,7 +375,7 @@ export default function Dashboard() {
         </View>
       </KeyboardAvoidingView>
 
-      <Text style={styles.hint}>Hold & drag a card to move it between columns</Text>
+      <Text style={[styles.hint, { color: colors.textMuted }]}>Hold & drag a card to move it between columns</Text>
 
       {error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -456,6 +461,8 @@ const styles = StyleSheet.create({
   remaining:       { color: Colors.inProgress, fontSize: 10 },
   headerRight:     { flexDirection: 'row', alignItems: 'center', gap: 8 },
   username:        { color: Colors.textSecondary, fontSize: 12 },
+  themeBtn:        { padding: 4 },
+  themeIcon:       { fontSize: 16 },
   logoutBtn:       { padding: 4 },
   logoutIcon:      { color: Colors.accent, fontSize: 16, fontWeight: 'bold' },
 
