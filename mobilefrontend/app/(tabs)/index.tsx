@@ -27,6 +27,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTodos } from '@/hooks/useTodos';
 import { Colors } from '@/constants/theme';
 import { Sidebar } from '@/components/Sidebar';
+import { ToastContainer } from '@/components/ToastContainer';
 import type { Todo, TodoColumnStatus } from '@/types/models';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -407,6 +408,9 @@ export default function Dashboard() {
           </KanbanSection>
         </ScrollView>
       )}
+
+      {/* Toast notifications — overlays all content */}
+      <ToastContainer />
 
       {/* Left sidebar — overlays all content */}
       <Sidebar

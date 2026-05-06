@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 import * as todosApi from '../api/todos';
+import { useToast } from '../context/ToastContext';
 import type { Todo, TodoColumnStatus } from '../types/models';
 
 const POLL_INTERVAL = 10_000; // 10 s
@@ -9,6 +10,7 @@ export function useTodos() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   // Timestamp of the last local mutation — polls skip for 3 s after a write
   // so an optimistic update never gets overwritten by a stale response.
@@ -21,10 +23,11 @@ export function useTodos() {
       setTodos(items);
     } catch {
       setError('Failed to load todos. Check your connection.');
+      showToast('Failed to load tasks. Check your connection.', 'error');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showToast]);
 
   // Initial fetch
   useEffect(() => { void refresh(); }, [refresh]);
@@ -39,7 +42,6 @@ export function useTodos() {
 
     const intervalId = setInterval(silentPoll, POLL_INTERVAL);
 
-    // Also refresh immediately when the app comes back to foreground
     const sub = AppState.addEventListener('change', (state) => {
       if (state === 'active') void refresh();
     });
@@ -50,12 +52,17 @@ export function useTodos() {
     };
   }, [refresh]);
 
-  // Stable refs — all use functional setTodos so they never close over stale state
   const add = useCallback(async (title: string): Promise<void> => {
     lastMutatedAt.current = Date.now();
-    const todo = await todosApi.createTodo(title);
-    setTodos((prev) => [todo, ...prev]);
-  }, []);
+    try {
+      const todo = await todosApi.createTodo(title);
+      setTodos((prev) => [todo, ...prev]);
+      showToast('Task added successfully', 'success');
+    } catch (e) {
+      showToast('Failed to add task. Please try again.', 'error');
+      throw e; // re-throw so the button spinner still clears in handleAdd
+    }
+  }, [showToast]);
 
   const toggle = useCallback(async (todo: Todo): Promise<void> => {
     lastMutatedAt.current = Date.now();
@@ -66,12 +73,12 @@ export function useTodos() {
       setTodos((prev) => prev.map((t) => (t.id === todo.id ? updated : t)));
     } catch {
       setTodos((prev) => prev.map((t) => (t.id === todo.id ? todo : t)));
+      showToast('Failed to update task. Changes reverted.', 'error');
     }
-  }, []);
+  }, [showToast]);
 
   const remove = useCallback(async (id: string): Promise<void> => {
     lastMutatedAt.current = Date.now();
-    // Capture snapshot inside the updater so it runs synchronously before re-render
     let snapshot: Todo[] = [];
     setTodos((prev) => {
       snapshot = prev;
@@ -79,10 +86,12 @@ export function useTodos() {
     });
     try {
       await todosApi.deleteTodo(id);
+      showToast('Task deleted successfully', 'success');
     } catch {
       setTodos(snapshot);
+      showToast('Failed to delete. Task restored.', 'error');
     }
-  }, []);
+  }, [showToast]);
 
   const updateStatus = useCallback(async (todo: Todo, status: TodoColumnStatus): Promise<void> => {
     lastMutatedAt.current = Date.now();
@@ -91,10 +100,12 @@ export function useTodos() {
     try {
       const updated = await todosApi.updateTodo(todo.id, { status });
       setTodos((prev) => prev.map((t) => (t.id === todo.id ? updated : t)));
+      showToast('Task moved', 'success');
     } catch {
       setTodos((prev) => prev.map((t) => (t.id === todo.id ? todo : t)));
+      showToast('Failed to move task. Changes reverted.', 'error');
     }
-  }, []);
+  }, [showToast]);
 
   return { todos, loading, error, add, toggle, remove, refresh, updateStatus };
 }
